@@ -1,0 +1,59 @@
+ /* html {
+    height: 100%;
+    width: 100%;
+  }
+  
+  body {
+    display: table;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .header {
+    height: 10%;
+  }
+  
+  .card-section {
+    height: 20%;
+    background-color: #ddd;
+  }
+  
+  .deck-section {
+    height: 60%;
+    background-color: #eee;
+  }
+  
+  .footer {
+    display: table-row;
+    height: 10%;
+  }
+
+
+  #header_div {
+    height: 10%;
+    background-color: #eee;
+  }
+
+  #top_div {
+    position: absolute;
+    height: 20%;
+    text-align:center;
+  }
+  
+  #middle_div {
+    position: absolute;
+    height: 50%;
+    text-align:center;
+    background-color: #eee;
+    background-color: yellow;
+  }
+
+  #bottom_div {
+    position: absolute;
+    height: 20%;
+    text-align:center;
+    background-color: bisque;
+    color:#FFFFFF;
+  } */

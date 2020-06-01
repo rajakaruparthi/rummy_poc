@@ -1,0 +1,22 @@
+
+<!-- <div class="container" *ngIf="openCard != null">
+  <ul id="menu">
+    <li>
+      <img style="width: 8%;" src="../../assets/cards/Yellow_back.jpg" />
+    </li>
+    &nbsp;
+    <li>
+      <img style="width: 8%;" src="../../assets/cards/{{ openCard }}.jpg" />
+    </li>
+  </ul>
+</div> -->
+
+<div style="height: 20%;" *ngIf="openCard != null">
+  <div class="example-list">
+    <div class="example-box">
+      <img style="width:7.69%;margin-left:40%" src="../../assets/cards/Yellow_back.jpg" (click)='addCardToHand()'/>
+      <img style="width:7.69%;margin-right:40%" src="../../assets/cards/{{ openCard }}.jpg" (click)='addCardToHand()'/>
+    </div>
+  </div>
+</div>
+

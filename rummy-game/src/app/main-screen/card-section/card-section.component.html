@@ -1,0 +1,21 @@
+<!-- <div class="row">
+  <ul id="menu">
+      <li *ngFor="let each of images">
+        <img style="width: 7%" src="../../assets/cards/{{each}}.jpg">
+      </li>
+  </ul>
+</div> -->
+
+<div style="height: 20%;">
+  <div cdkDropList cdkDropListOrientation="horizontal" class="example-list" (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let image of hands_and_cards[0]" cdkDrag>
+      <img style="width: 100%" src="../../assets/cards/{{image}}.jpg">
+    </div>
+  </div>
+</div>
+
+<!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+  <div class="example-box" *ngFor="let movie of images" cdkDrag>
+    <img style="width: 7%" src="../../assets/cards/{{movie}}.jpg">
+  </div>
+</div> -->
