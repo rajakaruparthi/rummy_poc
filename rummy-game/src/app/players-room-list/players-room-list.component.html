@@ -1,0 +1,15 @@
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let usr of playersObs | async">
+        <td>{{usr.name}}</td>
+    </tr>
+  </tbody>
+
+</table>
+<!-- <button class="btn btn-primary" (click)="onRefresh()">Refresh</button> -->
+<button class="btn btn-secondary" style="float: right;" routerLink="mainscreen">Start Game</button>

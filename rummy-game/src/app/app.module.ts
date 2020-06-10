@@ -16,6 +16,14 @@ import { GuestPageComponent } from './guest-page/guest-page.component';
 import { CreateRoomComponent } from './create-room/create-room.component';
 import { ListRoomsComponent } from './list-rooms/list-rooms.component';
 import { FormsModule } from '@angular/forms';
+import { LeftpaneComponent } from './leftpane/leftpane.component';
+import { UsersChangeComponent } from './users-change/users-change.component';
+import { PlayersRoomListComponent } from './players-room-list/players-room-list.component';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
+
 
 @NgModule({
   declarations: [
@@ -29,14 +37,18 @@ import { FormsModule } from '@angular/forms';
     HomeComponent,
     GuestPageComponent,
     CreateRoomComponent,
-    ListRoomsComponent
+    ListRoomsComponent,
+    LeftpaneComponent,
+    UsersChangeComponent,
+    PlayersRoomListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     DemoMaterialModule,
-    FormsModule
+    FormsModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [],
   bootstrap: [AppComponent]

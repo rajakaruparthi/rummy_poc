@@ -12,17 +12,8 @@ export class DeckAndDiscardComponent implements OnInit {
   openCard = null;
 
   ngOnInit() {
-    setTimeout(() => {
-     this.assignOpenCard();
-    }, 1000);
   }
 
   assignOpenCard() {
-    this.openCard = this.cService.getOpenCard();
-    console.log('open card--' + this.openCard);
-  }
-
-  addCardToHand() {
-    this.openCard = '2S';
   }
 }

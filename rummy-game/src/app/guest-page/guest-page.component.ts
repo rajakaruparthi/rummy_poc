@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonService } from '../common.service';
 
 @Component({
   selector: 'app-guest-page',
@@ -9,10 +10,14 @@ export class GuestPageComponent implements OnInit {
 
   userName = '';
 
-  constructor() { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit() {
+    // let users = this.commonService.getUsers();
+    // console.log(users);
   }
 
-
+  onClickViewRooms(userName: string) {
+    this.commonService.setPlayerName(userName);
+  }
 }

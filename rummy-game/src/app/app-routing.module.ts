@@ -4,12 +4,18 @@ import { HomeComponent } from './home/home.component';
 import { GuestPageComponent } from './guest-page/guest-page.component';
 import { CreateRoomComponent } from './create-room/create-room.component';
 import { ListRoomsComponent } from './list-rooms/list-rooms.component';
+import { MainScreenComponent } from './main-screen/main-screen.component';
+import { PlayersRoomListComponent } from './players-room-list/players-room-list.component';
+import { ListRoomsResolver } from './resolvers/list-rooms-resolver';
+import { ListUsersResolver } from './resolvers/list-users-resolver';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'guest', component: GuestPageComponent},
-  {path: 'listrooms', component: ListRoomsComponent},
-  {path: 'create-room', component: CreateRoomComponent}
+  {path: 'listrooms', component: ListRoomsComponent, resolve: [ListRoomsResolver]},
+  {path: 'create-room', component: CreateRoomComponent},
+  {path: 'listrooms/:id/mainscreen', component: MainScreenComponent},
+  {path: 'listrooms/:id', component: PlayersRoomListComponent, resolve: [ListUsersResolver]}
 ];
 
 @NgModule({
@@ -17,5 +23,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
-
 }

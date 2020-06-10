@@ -1,21 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Rooms } from './models/rooms.model';
+import { ShuffleCardsResponse } from './models/shuffle-cards-response.model';
+import { AddPlayerRequest } from './models/add-player-request.model';
+import { Player } from './models/player.model';
+import { RoomById } from './models/room-by-id.model';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CommonService {
+export class CommonService implements OnInit{
+
+  ngOnInit() {
+  }
 
   images: string[] = [];
-
-  clubs: number[] = [];
-
-  diamonds: number[] = [];
-
-  hearts: number[] = [];
-
-  spades: number[] = [];
 
   cards: string[] = [];
 
@@ -27,18 +29,89 @@ export class CommonService {
 
   open_card;
 
-  getUrl = 'http://localhost:8080/api/shuffle-cards';
+  roomsList: Rooms[] = [];
 
-  constructor(private http: HttpClient) {}
+  playersList: Player[] = [];
 
-  setUpdatedCards(updatedCards: string[]) {
-    this.cards = updatedCards;
+  shuffleCardsUrl = 'http://localhost:8102/api/shuffle-cards';
+  getRoomsUrl = 'http://localhost:8102/api/get-rooms';
+  getRoomById = 'http://localhost:8102/api/get-room-by-id';
+  createRoomUrl = 'http://localhost:8102/api/create-room';
+  addPlayerToRoomUrl = 'http://localhost:8102/api/update-room';
+  deleteRoomUrl = 'http://localhost:8102/api/delete-room';
+
+  roomsChanged = new Subject<Rooms[]>();
+  playerName: string;
+
+  constructor(private http: HttpClient, private socket: Socket) {}
+
+  users = this.socket.fromEvent<Player[]>('users');
+
+  addPlayerToRoom(roomId) {
+    this.socket.emit('addUser', this.getPlayerName());
+    const playerName = this.getPlayerName();
+    const addPlayerReq = new AddPlayerRequest(roomId, playerName);
+    this.http.post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq).subscribe((data) => {
+      this.setPlayersList(data.playersList);
+    });
+  }
+
+  createRoom(roomName: string, password: string) {
+    const room = new Rooms(null, roomName, password, this.playersList)
+    return this.http.post(this.createRoomUrl, room, {responseType: 'json'}).toPromise();
+  }
+
+  deleteRoom(index: number, roomId: string) {
+    this.roomsList.splice(index, 1);
+    this.http.delete(this.deleteRoomUrl + '/' + roomId).subscribe(
+      (data) => {
+        console.log(data);
+      }
+    );
+    this.roomsChanged.next(this.roomsList.slice());
+  }
+
+
+
+  setUpdatedCards(roomId: string) {
+    const shuffleCardsReq = { roomId: roomId };
+    this.http.post(this.shuffleCardsUrl, shuffleCardsReq).subscribe((data) => {
+      console.log(data);
+    });
+  }
+
+
+
+  setPlayersList(playesList) {
+    this.playersList = playesList;
+  }
+
+  getPlayerList(): Player[] {
+    return this.playersList;
+  }
+
+  getPlayersByRoom(roomId) {
+    const roomIdObj = new RoomById(roomId);
+    this.http.post<Rooms>(this.getRoomById, roomIdObj).subscribe(
+      (data) => {
+        this.setPlayersList(data.playersList);
+      }
+    );
+    return this.getPlayerList();
   }
 
   setOpenCard(deck) {
     this.open_card = deck[0];
     deck = deck.slice(1);
     return deck;
+  }
+
+  setPlayerName(playerName: string) {
+    this.playerName = playerName;
+  }
+
+  getPlayerName(): string {
+    return this.playerName;
   }
 
   getOpenCard() {
@@ -49,63 +122,36 @@ export class CommonService {
     return this.cards.slice();
   }
 
+  pullRoomsList() {
+    return this.http.get<Rooms[]>(this.getRoomsUrl).subscribe((rooms) => {
+      this.setRooms(rooms);
+    });
+  }
+
+  setRooms(rooms: Rooms[]) {
+    console.log(rooms);
+    this.roomsList = rooms;
+    this.roomsChanged.next(this.roomsList.slice());
+  }
+
+  getRooms() {
+    return this.roomsList.slice();
+  }
+
   getRandomNums() {
     this.updatedCards = [];
-    return this.http
-      .get<number[]>(this.getUrl)
-      .pipe()
-      .subscribe();
+    return this.http.get<number[]>(this.shuffleCardsUrl).pipe().subscribe();
   }
 
   getTheCards(): Promise<number[]> {
-    return this.http.get(this.getUrl)
+    return this.http
+      .get(this.shuffleCardsUrl)
       .toPromise()
-      .then(response => response as number[])
+      .then((response) => response as number[])
       .catch();
   }
 
   pushCardToTheCard(card: string) {
     this.cards.push(card);
-  }
-
-  parseNumberToCard(element: number) {
-    const division: number = Math.ceil(element / 13);
-    let whichCard = null;
-    const card = this.getTheCard(element % 13);
-    if (division === 1) {
-      this.clubs[card] = element;
-      whichCard = card + 'C';
-    }
-    if (division === 2) {
-      this.diamonds[card] = element;
-      whichCard = card + 'D';
-    }
-    if (division === 3) {
-      this.hearts[card] = element;
-      whichCard = card + 'H';
-    }
-    if (division === 4) {
-      this.spades[card] = element;
-      whichCard = card + 'S';
-    }
-    return whichCard;
-  }
-
-  getTheCard(key: number) {
-    const map = new Map();
-    map.set(1, 'A');
-    map.set(2, '2');
-    map.set(3, '3');
-    map.set(4, '4');
-    map.set(5, '5');
-    map.set(6, '6');
-    map.set(7, '7');
-    map.set(8, '8');
-    map.set(9, '9');
-    map.set(10, '10');
-    map.set(11, 'J');
-    map.set(12, 'Q');
-    map.set(0, 'K');
-    return map.get(key);
   }
 }
