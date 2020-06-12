@@ -20,6 +20,7 @@ export class CreateRoomComponent implements OnInit {
     const roomName = value.roomName;
     const password = value.password;
     const response = this.commonService.createRoom(roomName, password);
+    this.commonService.setGameCreator(this.commonService.getPlayerName());
     response.then(
       data => {
         this.router.navigate(['/listrooms']);

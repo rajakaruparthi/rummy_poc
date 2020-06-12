@@ -15,10 +15,10 @@
         {{room.playersList.length}}
       </td>
         <button class="btn btn-danger" id="delete_room_{{room.id}}" (click)="deleteRoom(i, room.id)">Delete</button>
-        <button class="button" id="enter_room_{{room.id}}" routerLink="{{room.id}}" (click)="enterToRoom(room.id)">Join Room</button>
+        <button class="button" id="enter_room_{{room.id}}" routerLink="{{room.id}}/mainscreen" (click)="enterToRoom(room.id)">Join Room</button>
       <td></td>
     </tr>
-  </tbody>
+  </tbody>x
 </table>
 
 <button class="btn btn-secondary" routerLink="/create-room">Create Room</button> &nbsp;

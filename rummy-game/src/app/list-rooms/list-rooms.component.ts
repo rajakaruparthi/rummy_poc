@@ -20,12 +20,13 @@ export class ListRoomsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    window.addEventListener('beforeunload', function (e) {
-      const confirmationMessage = '\o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
-      return confirmationMessage;              // Gecko, WebKit, Chrome <34
-    });
+    // window.addEventListener('beforeunload', function (e) {
+    //   const confirmationMessage = '\o/';
+    //   console.log('cond');
+    //   e.returnValue = confirmationMessage;     
+    //   return confirmationMessage;              
+    // });
+
     this.roomsList = this.commonService.getRooms();
     this.subscription = this.commonService.roomsChanged
       .subscribe(
@@ -33,7 +34,6 @@ export class ListRoomsComponent implements OnInit, OnDestroy {
           this.roomsList = rooms;
         }
       );
-    console.log('logged in as', this.commonService.getPlayerName());
   }
 
   ngOnDestroy() {

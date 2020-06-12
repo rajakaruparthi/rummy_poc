@@ -1,18 +1,12 @@
 <div class="container">
-  <div class="item">One</div>
-  <div class="item">Two</div>
-  <div class="item">Raja</div>
+  <div>
+    logged in as {{player}}
+  </div>
+  <div class="item" *ngFor="let each of playersObs | async">
+    {{each.name}}
+  </div>
 </div>
  <div>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 </div>
-<!-- <div>
-  <a>
-    <div class="w3-container">
-      <span class="w3-tag w3-padding w3-round-large w3-red w3-center">
-        Raja
-      </span>
-    </div>
-    </a>
-</div> -->

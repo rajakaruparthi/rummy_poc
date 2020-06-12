@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonService } from '../common.service';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Player } from '../models/player.model';
 
 @Component({
   selector: 'app-users-change',
@@ -7,9 +11,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsersChangeComponent implements OnInit {
 
-  constructor() { }
+  playersObs: Observable<Player[]>;
+  player: any;
+
+  constructor(private commonService: CommonService, private router: Router) { }
 
   ngOnInit() {
+    const roomId = this.router.url.split('/')[2];
+    this.commonService.getPlayersByRoom(roomId);
+    this.playersObs = this.commonService.users;
+    this.player = this.commonService.playerName;
   }
 
 }

@@ -9,7 +9,8 @@
         <td>{{usr.name}}</td>
     </tr>
   </tbody>
-
 </table>
-<!-- <button class="btn btn-primary" (click)="onRefresh()">Refresh</button> -->
-<button class="btn btn-secondary" style="float: right;" routerLink="mainscreen">Start Game</button>
+{{startFlag}}
+<div *ngIf="startFlag">
+  <button class="btn btn-secondary" style="float: right;" (click)="assignCards()" routerLink="mainscreen">Start Game</button>
+</div>

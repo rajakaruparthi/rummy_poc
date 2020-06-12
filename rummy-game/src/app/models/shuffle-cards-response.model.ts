@@ -1,4 +1,6 @@
+import { PlayerCardsModel } from "./player-cards.model";
+
 export class ShuffleCardsResponse {
-    constructor(public deck: string[], public openCard: string, public playersCards:  {string: string[]}) {
+    constructor(public deck: string[], public openCard: string, public playersCards: PlayerCardsModel[]) {
     }
 }

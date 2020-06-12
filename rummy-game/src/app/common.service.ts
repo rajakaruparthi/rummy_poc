@@ -1,21 +1,19 @@
-import { Injectable, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Rooms } from './models/rooms.model';
-import { ShuffleCardsResponse } from './models/shuffle-cards-response.model';
-import { AddPlayerRequest } from './models/add-player-request.model';
-import { Player } from './models/player.model';
-import { RoomById } from './models/room-by-id.model';
-import { Socket } from 'ngx-socket-io';
+import { Injectable, OnInit } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable, Subject } from "rxjs";
+import { map, tap } from "rxjs/operators";
+import { Rooms } from "./models/rooms.model";
+import { ShuffleCardsResponse } from "./models/shuffle-cards-response.model";
+import { AddPlayerRequest } from "./models/add-player-request.model";
+import { Player } from "./models/player.model";
+import { RoomById } from "./models/room-by-id.model";
+import { Socket } from "ngx-socket-io";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
-export class CommonService implements OnInit{
-
-  ngOnInit() {
-  }
+export class CommonService implements OnInit {
+  ngOnInit() {}
 
   images: string[] = [];
 
@@ -33,54 +31,81 @@ export class CommonService implements OnInit{
 
   playersList: Player[] = [];
 
-  shuffleCardsUrl = 'http://localhost:8102/api/shuffle-cards';
-  getRoomsUrl = 'http://localhost:8102/api/get-rooms';
-  getRoomById = 'http://localhost:8102/api/get-room-by-id';
-  createRoomUrl = 'http://localhost:8102/api/create-room';
-  addPlayerToRoomUrl = 'http://localhost:8102/api/update-room';
-  deleteRoomUrl = 'http://localhost:8102/api/delete-room';
+  gameCreator: Player;
+
+  shuffleCardsUrl = "http://localhost:8102/api/shuffle-cards";
+  getRoomsUrl = "http://localhost:8102/api/get-rooms";
+  getRoomById = "http://localhost:8102/api/get-room-by-id";
+  createRoomUrl = "http://localhost:8102/api/create-room";
+  addPlayerToRoomUrl = "http://localhost:8102/api/update-room";
+  deleteRoomUrl = "http://localhost:8102/api/delete-room";
+  checkIfAdmin = "http://localhost:8102/api/is-admin";
+  addAdminUser = "http://localhost:8102/api/add-user";
 
   roomsChanged = new Subject<Rooms[]>();
   playerName: string;
+  updatedCardResponse: ShuffleCardsResponse;
 
   constructor(private http: HttpClient, private socket: Socket) {}
 
-  users = this.socket.fromEvent<Player[]>('users');
+  users = this.socket.fromEvent<Player[]>("users");
+
+  setGameCreator(creator: string){
+    console.log("creater"+ creator);
+    this.gameCreator = new Player(creator);
+  }
 
   addPlayerToRoom(roomId) {
-    this.socket.emit('addUser', this.getPlayerName());
+    this.socket.emit("addUser", this.getPlayerName());
     const playerName = this.getPlayerName();
     const addPlayerReq = new AddPlayerRequest(roomId, playerName);
-    this.http.post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq).subscribe((data) => {
-      this.setPlayersList(data.playersList);
-    });
+    this.http
+      .post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq)
+      .subscribe((data) => {
+        this.setPlayersList(data.playersList);
+      });
   }
 
   createRoom(roomName: string, password: string) {
-    const room = new Rooms(null, roomName, password, this.playersList)
-    return this.http.post(this.createRoomUrl, room, {responseType: 'json'}).toPromise();
+    const room = new Rooms(null, roomName, password, this.playersList);
+    return this.http
+      .post(this.createRoomUrl, room, { responseType: "json" })
+      .toPromise();
   }
 
   deleteRoom(index: number, roomId: string) {
+    this.socket.emit("deleteRoom", roomId);
     this.roomsList.splice(index, 1);
-    this.http.delete(this.deleteRoomUrl + '/' + roomId).subscribe(
-      (data) => {
-        console.log(data);
-      }
-    );
+    this.http.delete(this.deleteRoomUrl + "/" + roomId).subscribe((data) => {
+      console.log(data);
+    });
     this.roomsChanged.next(this.roomsList.slice());
   }
 
-
-
   setUpdatedCards(roomId: string) {
     const shuffleCardsReq = { roomId: roomId };
-    this.http.post(this.shuffleCardsUrl, shuffleCardsReq).subscribe((data) => {
-      console.log(data);
-    });
+    console.log(roomId);
+    let response: ShuffleCardsResponse = null;
+    this.http
+      .post<ShuffleCardsResponse>(this.shuffleCardsUrl, shuffleCardsReq)
+      .subscribe((data) => {
+
+        console.log(data);
+        response = new ShuffleCardsResponse(
+          data.deck,
+          data.openCard,
+          data.playersCards
+        );
+        this.updatedCardResponse = response;
+      });
+    console.log(this.updatedCardResponse);
+    return response;
   }
 
-
+  getCardsResponse(): ShuffleCardsResponse {
+    console.log(this.updatedCardResponse);
+    return this.updatedCardResponse;
+  }
 
   setPlayersList(playesList) {
     this.playersList = playesList;
@@ -92,11 +117,9 @@ export class CommonService implements OnInit{
 
   getPlayersByRoom(roomId) {
     const roomIdObj = new RoomById(roomId);
-    this.http.post<Rooms>(this.getRoomById, roomIdObj).subscribe(
-      (data) => {
-        this.setPlayersList(data.playersList);
-      }
-    );
+    this.http.post<Rooms>(this.getRoomById, roomIdObj).subscribe((data) => {
+      this.setPlayersList(data.playersList);
+    });
     return this.getPlayerList();
   }
 

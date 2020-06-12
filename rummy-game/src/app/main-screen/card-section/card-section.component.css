@@ -12,6 +12,15 @@ ul#menu li {
   overflow: visible;
 }
 
+.example-list-open {
+  max-width: 100%;
+  min-height: 100px;
+  display: flex;
+  flex-direction: row;
+  background: white;
+  border-radius: 1px;
+  overflow: visible;
+}
 .example-box {
   color: rgba(0, 0, 0, 0);
   display: flex;

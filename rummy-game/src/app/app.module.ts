@@ -21,6 +21,7 @@ import { UsersChangeComponent } from './users-change/users-change.component';
 import { PlayersRoomListComponent } from './players-room-list/players-room-list.component';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { AdminPageComponent } from './admin-page/admin-page.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -40,7 +41,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     ListRoomsComponent,
     LeftpaneComponent,
     UsersChangeComponent,
-    PlayersRoomListComponent
+    PlayersRoomListComponent,
+    AdminPageComponent
   ],
   imports: [
     BrowserModule,
