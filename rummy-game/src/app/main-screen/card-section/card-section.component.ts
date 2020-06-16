@@ -6,12 +6,12 @@ import {
   transferArrayItem,
 } from "@angular/cdk/drag-drop";
 import { Observable } from "rxjs";
-import { Rooms } from "src/app/models/rooms.model";
 import { Router } from "@angular/router";
-import { ShuffleCardsRequest } from "src/app/models/shuffle-cards.model";
 import { ShuffleCardsResponse } from "src/app/models/shuffle-cards-response.model";
 import { Socket } from "ngx-socket-io";
 import { Player } from "src/app/models/player.model";
+import { PlayerCardsModel } from "src/app/models/player-cards.model";
+import { ConfirmDialogService } from "src/app/confirm-dialog.service";
 
 @Component({
   selector: "app-card-section",
@@ -20,13 +20,41 @@ import { Player } from "src/app/models/player.model";
 })
 export class CardSectionComponent implements OnInit {
   shuffleCardsResponse: ShuffleCardsResponse = null;
+  foldDisplayFlag = false;
   playerName;
   images = [];
   openCard = [];
+  playersArray = [];
+  openJoker = null;
   deck = [];
   distributeFlag: boolean = false;
+  cards;
+  isDisabled = false;
 
-  playerCardsEmiter = this.socket.fromEvent<string[]>("cards");
+  currentPlayerIndex = 0;
+  currentPlayer = "";
+
+  playerCardsEmiter = this.socket.fromEvent<PlayerCardsModel[]>("cards");
+
+  openCardEmitter = this.socket
+    .fromEvent<string[]>("openCardEmitter")
+    .subscribe((data) => (this.openCard = data));
+
+  deckEmitter = this.socket
+    .fromEvent<string[]>("deckEmitter")
+    .subscribe((data) => (this.deck = data));
+
+  jokerEmitter = this.socket
+    .fromEvent<string>("jokerEmitter")
+    .subscribe((data) => (this.openJoker = data));
+
+  currentPlayerIndexEmitter = this.socket
+    .fromEvent<number>("currentIndex")
+    .subscribe((data) => (this.currentPlayerIndex = data));
+
+  currentPlayerEmitter = this.socket
+    .fromEvent<Player>("currentPlayer")
+    .subscribe((data) => (this.currentPlayer = data.name));
 
   player: string;
 
@@ -39,10 +67,12 @@ export class CardSectionComponent implements OnInit {
   constructor(
     private commonService: CommonService,
     private router: Router,
-    private socket: Socket
+    private socket: Socket,
+    private dialogService: ConfirmDialogService
   ) {}
 
   ngOnInit() {
+    this.player = this.commonService.getPlayerName();
     if (
       this.commonService.gameCreator !== undefined &&
       this.commonService.gameCreator.name === this.commonService.getPlayerName()
@@ -50,71 +80,115 @@ export class CardSectionComponent implements OnInit {
       this.startFlag = true;
     }
     this.playersObs = this.commonService.users;
+    this.playersObs.subscribe((data) => {
+      this.playersArray = data;
+    });
   }
 
-  onStart() {
-    this.socket.emit("startGame", "true");
-  }
-
-  drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
+  drop(event: CdkDragDrop<string[]>, cards) {
+    this.cards = cards;
     if (event.previousContainer === event.container) {
-      moveItemInArray(this.images, event.previousIndex, event.currentIndex);
-    } else {
-      if (this.images.length < 14) {
-        transferArrayItem(
-          event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex
-        );
-      } else {
-        console.log("u can have only 14 cards in hand");
-      }
+      moveItemInArray(cards, event.previousIndex, event.currentIndex);
+    }
+     else {
+      // if (cards.length < 14) {
+      //   transferArrayItem(
+      //     event.previousContainer.data,
+      //     event.container.data,
+      //     event.previousIndex,
+      //     event.currentIndex
+      //   );
+      // } else {
+      //   console.log("u can have only 14 cards in hand");
+      // }
     }
   }
 
   dropOpenCard(event: CdkDragDrop<string[]>) {
-    this.openCard.pop();
-    if (this.images.length == 14) {
+    console.log(event);
+    if (this.cards.length == 14) {
+      console.log("this.currentPlayerIndex --- " + this.currentPlayerIndex);
+      console.log("came in if");
+      this.socket.emit("changePlayer", this.currentPlayerIndex);
+
+      if (this.openCard.length === 1) {
+        this.openCard.shift();
+      }
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
+      this.socket.emit("updateOpenCard", this.openCard);
+      console.log(this.openCard);
+    } else if (this.cards.length == 13) {
+      console.log("came in else if");
+      this.cards.push(event.container.data[0]);
+      this.openCard.pop();
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+      console.log(this.openCard);
     } else {
-      console.log("you should have 13 cards in hand");
+      alert("Size should be 13");
     }
-    console.log(this.openCard);
   }
 
   dropDeckTopCard(event: CdkDragDrop<string[]>) {
-    transferArrayItem(
-      event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
-      event.currentIndex
-    );
+    console.log("came in deck drop");
+    console.log(event);
+    console.log(this.cards);
+    if (this.cards.length < 14) {
+      this.cards.push(event.container.data[0]);
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+      this.isDisabled = false;
+      this.deck.shift();
+      this.socket.emit("updateDeck", this.deck);
+      // console.log(this.deck);
+    }
+  }
+
+  onFold(playerIndex: number) {
+    this.openConfirmationDialog(playerIndex);
+  }
+
+  public openConfirmationDialog(playerIndex: number) {
+    this.dialogService
+      .confirm("Please confirm..", "Do you really want to fold ... ?")
+      .then((confirmed) => console.log("User confirmed:", confirmed))
+      .catch(() =>
+        console.log("Continue")
+      );
   }
 
   distribute() {
     const roomId: string = this.router.url.split("/")[2];
     this.commonService.setUpdatedCards(roomId);
-    this.onStart();
     setTimeout(() => {
-      this.distributeFlag = true;
       this.playerName = this.commonService.playerName;
       this.shuffleCardsResponse = this.commonService.getCardsResponse();
-      this.shuffleCardsResponse.playersCards.forEach((data) => {
-        if (this.playerName === data.name) {
-          this.images = data.cards;
-          this.socket.emit("startGame", this.images);
-        }
-      });
+      this.socket.emit("startGame", this.shuffleCardsResponse.playersCards);
       let response: ShuffleCardsResponse = this.commonService.getCardsResponse();
-      this.openCard = Array.of(response.openCard);
-      this.deck = response.deck;
+      this.currentPlayer = response.playersCards[0].name;
+      this.socket.emit("updateOpenCard", response.openCard);
+      this.socket.emit("updateDeck", response.deck);
+      this.socket.emit("joker", response.openJoker);
+      this.images = response.playersCards[0].cards;
+      this.foldDisplayFlag = true;
     }, 500);
+  }
+
+  changePlayerActive() {
+    this.commonService.users.subscribe((data) => (this.playersArray = data));
+    console.log(this.playersArray);
   }
 }

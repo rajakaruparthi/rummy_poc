@@ -8,7 +8,6 @@ import { HeaderComponent } from './main-screen/header/header.component';
 import { CardSectionComponent } from './main-screen/card-section/card-section.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DemoMaterialModule } from './material.module';
-import { DeckAndDiscardComponent } from './main-screen/deck-and-discard/deck-and-discard.component';
 import { SignInComponent } from './user-reg/sign-in/sign-in.component';
 import { UserRegistrationComponent } from './user-reg/user-registration/user-registration.component';
 import { HomeComponent } from './home/home.component';
@@ -22,6 +21,9 @@ import { PlayersRoomListComponent } from './players-room-list/players-room-list.
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { AdminPageComponent } from './admin-page/admin-page.component';
+import { DialogBoxComponent } from './dialog-box/dialog-box.component';
+import { ConfirmDialogService } from './confirm-dialog.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -32,7 +34,6 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     MainScreenComponent,
     HeaderComponent,
     CardSectionComponent,
-    DeckAndDiscardComponent,
     SignInComponent,
     UserRegistrationComponent,
     HomeComponent,
@@ -42,7 +43,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     LeftpaneComponent,
     UsersChangeComponent,
     PlayersRoomListComponent,
-    AdminPageComponent
+    AdminPageComponent,
+    DialogBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -50,9 +52,11 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     HttpClientModule,
     DemoMaterialModule,
     FormsModule,
+    NgbModule.forRoot(),
     SocketIoModule.forRoot(config)
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [ ConfirmDialogService],
+  bootstrap: [AppComponent],
+  entryComponents: [ DialogBoxComponent ],
 })
 export class AppModule { }

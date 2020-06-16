@@ -1,4 +1,3 @@
 export class PlayerCardsModel {
-    constructor(public name: string, public cards: string[]) {
-    }
+    constructor(public name: string, public cards: string[]) {}
 }

@@ -1,70 +1,102 @@
-<table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-    </tr>
-  </thead>
+<span style="float: left;">{{ currentPlayer }} is playing now ..... </span>
+<span style="float: right;"
+  >Logged in as <b>{{ player }}</b></span
+>
+<table class="table table-dark"  style="border-spacing: 10px;">
   <tbody>
-    <tr *ngFor="let usr of playersObs | async">
-        <td>{{usr.name}}</td>
-    </tr>
+    <td
+      *ngFor="let usr of playersObs | async; let i = index"
+      [ngClass]="{ selected: i == currentPlayerIndex }"
+    >
+      <b>{{ usr.name }}</b>
+    </td>
   </tbody>
 </table>
-{{startFlag}}
-<div *ngIf="startFlag">
-  <button class="btn btn-secondary" style="float: right;">Start Game</button>
-</div>
 
-<div *ngIf="distributeFlag">
-  <div style="height: 20%;">
+<div>
+  <div
+    style="height: 20%;"
+    *ngFor="let each of playerCardsEmiter | async; let i = index"
+  >
     <div
+      *ngIf="each.name === player"
       cdkDropList
-      #cardsList="cdkDropList"
-      [cdkDropListData]="images"
+      #cardList="cdkDropList"
+      [cdkDropListData]="each.cards"
       cdkDropListOrientation="horizontal"
       class="example-list"
       [cdkDropListConnectedTo]="[openCardList]"
-      (cdkDropListDropped)="drop($event)"
+      (cdkDropListDropped)="drop($event, each.cards)"
     >
       <div
         class="example-box"
-        *ngFor="let image of images; let i = index"
+        *ngFor="let image of each.cards; let i = index"
         cdkDrag
       >
         <img style="width: 200%;" src="../../assets/cards/{{ image }}.jpg" />
       </div>
     </div>
   </div>
+
   <div style="background-color: white;">
-    <div cdkDropList
-    #deckList="cdkDropList"
-    [cdkDropListData]="deck"
-    cdkDropListOrientation="horizontal"
-    class="example-list-open"
-    [cdkDropListConnectedTo]="[cardsList]"
-    (cdkDropListDropped)="dropDeckTopCard($event)" 
-    cdkDragHandle >
-      <div cdkDrag>
-        <img style="width: 15%;" src="../../assets/cards/Yellow_back.jpg" />
+    <div
+      [ngClass]="{ disableDiv: currentPlayer != player }"
+      cdkDropList
+      #deckList="cdkDropList"
+      [cdkDropListData]="deck"
+      cdkDropListOrientation="horizontal"
+      [cdkDropListConnectedTo]="[cardList]"
+      (cdkDropListDropped)="dropDeckTopCard($event)"
+      cdkDragHandle
+    >
+      <div>
+        <img
+          *ngIf="deck.length > 0"
+          cdkDrag
+          style="width: 15%;"
+          src="../../assets/cards/Yellow_back.jpg"
+        />
+        <!-- transform: rotate(90deg); -->
+        <img
+          *ngIf="openJoker !== null"
+          style="width: 15%; z-index: -1;"
+          src="../../assets/cards/{{ openJoker }}.jpg"
+        />
+        <button
+          *ngIf="currentPlayer == player"
+          style="float: right;"
+          (click)="onFold(currentPlayerIndex)"
+          class="btn btn-danger"
+        >
+          Fold
+        </button>
       </div>
     </div>
-
     <div
+      [ngClass]="{ disableDiv: currentPlayer != player }"
       cdkDropList
       #openCardList="cdkDropList"
       [cdkDropListData]="openCard"
       cdkDropListOrientation="horizontal"
-      class="example-list-open"
-      [cdkDropListConnectedTo]="[cardsList]"
+      [cdkDropListConnectedTo]="[cardList]"
       (cdkDropListDropped)="dropOpenCard($event)"
     >
-      <div cdkDrag>
-        <img style="width: 15%;" src="../../assets/cards/{{ openCard[0] }}.jpg" />
-      </div>
+      <img
+        cdkDrag
+        style="width: 15%;"
+        src="../../assets/cards/{{ openCard[0] }}.jpg"
+      />
     </div>
   </div>
 </div>
 
 <div>
-  <button class="btn btn-primary" (click)="distribute()">Distribute</button>
+  <button
+    *ngIf="startFlag"
+    class="btn btn-secondary"
+    (click)="distribute()"
+    style="float: right;"
+  >
+    Start Game
+  </button>
 </div>

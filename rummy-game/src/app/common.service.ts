@@ -51,7 +51,6 @@ export class CommonService implements OnInit {
   users = this.socket.fromEvent<Player[]>("users");
 
   setGameCreator(creator: string){
-    console.log("creater"+ creator);
     this.gameCreator = new Player(creator);
   }
 
@@ -94,7 +93,8 @@ export class CommonService implements OnInit {
         response = new ShuffleCardsResponse(
           data.deck,
           data.openCard,
-          data.playersCards
+          data.playersCards,
+          data.openJoker
         );
         this.updatedCardResponse = response;
       });

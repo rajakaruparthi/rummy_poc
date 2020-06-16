@@ -1,6 +1,84 @@
 ul#menu li {
   display:inline;
 }
+.blinking{
+    animation:blinkingText 2s infinite;
+}
+
+@keyframes blinkingText{
+    0%{     color: #022175;    }
+    49%{    color: #022175; }
+    60%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #022175;    }
+}
+
+table {
+  border-spacing: 1em .5em;
+  padding: 0 2em 1em 0;
+  border: 1px solid orange;
+}
+
+td {
+  width: 1.5em;
+  height: 1.5em;
+  background: #d2d2d2;
+  text-align: center;
+  vertical-align: middle;
+}
+
+td.selected {
+  -webkit-animation: pulse-border 1s infinite;
+}
+
+@-webkit-keyframes pulse-border {
+  from, to { box-shadow: 0 0 0 0 #022175;}
+  50% { box-shadow: 0 0 0 4px #022175; }
+}
+
+td.t {
+  border: 4px solid #022175;
+  width: 50px;
+}
+
+td.top {
+  border-bottom: 4px dashed #022175;
+}
+td.left {
+  border-right: 4px dashed #022175;
+}
+td.right {
+  border-left: 4px dashed #022175;
+}
+td.bottom {
+  border-top: 4px dashed #022175;
+}
+td.middle {
+  border: 4px dashed #022175;
+}
+td {
+  background: steelblue;
+  height: 54px;
+  width: 25%;
+  font-weight: lighter;
+  text-shadow: 0 1px 0 #022175;
+  color: white;
+  border: 1px solid #38678f;
+  box-shadow: inset 0px 1px 2px #568ebd;
+  transition: all 0.2s;
+}
+
+.disableDiv{
+  pointer-events:none;
+}
+
+.rotateimg90 {
+  -webkit-transform:rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
 
 .example-list {
   max-width: 100%;

@@ -22,6 +22,7 @@
     "@angular/platform-browser": "~7.0.0",
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^4.1.1",
     "angular-material": "^1.1.22",
     "core-js": "^2.5.4",
     "fs": "0.0.1-security",
