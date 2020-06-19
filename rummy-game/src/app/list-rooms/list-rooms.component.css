@@ -1,11 +1,65 @@
-.button {
-    background-color: white;
-    color: black;
-    padding: 10px 10px;
+
+  .white-pane {
+    top: 78px;
+    left: 38px;
+    width: auto;
+    height: auto;
+    padding: 20px;
+    min-width: 300px;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border: 2px solid #ffffff;
+    border-radius: 11px;
+    opacity: 1;
+    margin: auto;
+  }
+  
+  .buttoncss {
+    top: 156px;
+    left: 56px;
+    width: 162px;
+    height: 38px;
+    background: #3f729b 0% 0% no-repeat padding-box;
+    border: 1px solid #707070;
+    border-radius: 19px;
+    opacity: 1;
+  }
+  
+  .button {
+    background-color: #3f729b;
+    border: none;
+    color: white;
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-left: 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 12px;
-    margin: 4px 2px;
-    cursor: pointer;
+    font-size: 16px;
+    border-radius: 20px;
   }
+  
+  .vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+  
+  .fix-7-12 {
+    max-width: 747px !important;
+  }
+  
+  .center {
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    position: absolute;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+  }
+  
+  
+  

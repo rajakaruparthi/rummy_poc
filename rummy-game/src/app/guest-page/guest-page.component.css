@@ -1,0 +1,39 @@
+.guest {
+    top: 188px;
+    left: 116px;
+    width: 196px;
+    height: 38px;
+    border-radius: 19px;
+    opacity: 1;
+    margin: 0 0 2rem;
+}
+
+.ads {
+    padding: 10px;
+    margin: 20px 0;
+    width: 100%;
+    border-radius: 5px;
+    background: #1565c0;
+}
+
+.column.last, .column.reset {
+    margin-right: 0 !important;
+}
+
+
+.column {
+    clear: none;
+    float: left;
+    min-height: 1px;
+}
+
+
+
+#div1, #div2 {
+    float: left;
+    width: 100px;
+    height: 35px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid white;
+}

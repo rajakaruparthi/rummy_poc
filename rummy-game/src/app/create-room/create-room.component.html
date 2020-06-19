@@ -1,17 +1,25 @@
 <form (ngSubmit)="onSubmit(f)" #f="ngForm">
-  <div class="form-row align-items-center">
-    <div class="col-auto">
-      <label class="sr-only" for="inlineFormInput">Room Name</label>
-      <input type="text" class="form-control mb-2" id="inlineFormInput" name="roomName" ngModel placeholder="Room Name" required>
-    </div>
-    <div class="col-auto">
-      <label class="sr-only" for="inlineFormInputGroup">Password</label>
-      <div class="input-group mb-2">
-        <input type="password" class="form-control" ngModel name="password" id="inlineFormInputGroup" placeholder="password" required>
+  <div class="center" style="margin: auto;">
+    <div class="white-pane">
+      <label class="sr-only" for="inlineFormInput">Enter Room Name .. </label>
+      <input
+        type="text"
+        class="form-control mb-2"
+        id="inlineFormInput"
+        name="roomName"
+        ngModel
+        placeholder="Enter Room Name ..."
+        required
+      />
+      <div class="col-auto">
+        <button
+          type="submit"
+          [disabled]="!f.valid"
+          class="btn btn-primary mb-2"
+        >
+          Submit
+        </button>
       </div>
-    </div>
-    <div class="col-auto">
-      <button type="submit" [disabled]="!f.valid" class="btn btn-primary mb-2">Submit</button>
     </div>
   </div>
 </form>

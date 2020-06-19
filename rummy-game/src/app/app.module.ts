@@ -16,7 +16,6 @@ import { CreateRoomComponent } from './create-room/create-room.component';
 import { ListRoomsComponent } from './list-rooms/list-rooms.component';
 import { FormsModule } from '@angular/forms';
 import { LeftpaneComponent } from './leftpane/leftpane.component';
-import { UsersChangeComponent } from './users-change/users-change.component';
 import { PlayersRoomListComponent } from './players-room-list/players-room-list.component';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
@@ -24,6 +23,7 @@ import { AdminPageComponent } from './admin-page/admin-page.component';
 import { DialogBoxComponent } from './dialog-box/dialog-box.component';
 import { ConfirmDialogService } from './confirm-dialog.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { JoinCreateTableComponent } from './join-create-table/join-create-table.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -41,10 +41,10 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     CreateRoomComponent,
     ListRoomsComponent,
     LeftpaneComponent,
-    UsersChangeComponent,
     PlayersRoomListComponent,
     AdminPageComponent,
-    DialogBoxComponent
+    DialogBoxComponent,
+    JoinCreateTableComponent
   ],
   imports: [
     BrowserModule,

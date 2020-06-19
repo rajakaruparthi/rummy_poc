@@ -21,6 +21,7 @@ import { ConfirmDialogService } from "src/app/confirm-dialog.service";
 export class CardSectionComponent implements OnInit {
   shuffleCardsResponse: ShuffleCardsResponse = null;
   foldDisplayFlag = false;
+  isGameStarted = false;
   playerName;
   images = [];
   openCard = [];
@@ -30,9 +31,10 @@ export class CardSectionComponent implements OnInit {
   distributeFlag: boolean = false;
   cards;
   isDisabled = false;
-
+  declaredFlag = false;
   currentPlayerIndex = 0;
   currentPlayer = "";
+  winnerIndex: number = null ;
 
   playerCardsEmiter = this.socket.fromEvent<PlayerCardsModel[]>("cards");
 
@@ -82,33 +84,58 @@ export class CardSectionComponent implements OnInit {
     this.playersObs = this.commonService.users;
     this.playersObs.subscribe((data) => {
       this.playersArray = data;
+      console.log(data);
     });
   }
 
-  drop(event: CdkDragDrop<string[]>, cards) {
+  drop(event: CdkDragDrop<string[]>, cards: string[]) {
     this.cards = cards;
     if (event.previousContainer === event.container) {
       moveItemInArray(cards, event.previousIndex, event.currentIndex);
+    } else {
+      if (cards.length == 14) {
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      } else {
+        console.log("u can have only 14 cards in hand");
+      }
     }
-     else {
-      // if (cards.length < 14) {
-      //   transferArrayItem(
-      //     event.previousContainer.data,
-      //     event.container.data,
-      //     event.previousIndex,
-      //     event.currentIndex
-      //   );
-      // } else {
-      //   console.log("u can have only 14 cards in hand");
-      // }
+  }
+
+  dropOpenCard1(event: CdkDragDrop<string[]>) {
+    if (this.cards !== undefined && this.cards.length == 14) {
+      this.socket.emit("changePlayer", this.currentPlayerIndex);
+      if (this.openCard.length === 1) {
+        this.openCard.shift();
+      }
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+      this.socket.emit("updateOpenCard", this.openCard);
+    } else if (this.cards.length == 13) {
+      this.cards.push(event.container.data[0]);
+      this.openCard.pop();
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      alert("Size should be 13");
     }
   }
 
   dropOpenCard(event: CdkDragDrop<string[]>) {
     console.log(event);
-    if (this.cards.length == 14) {
-      console.log("this.currentPlayerIndex --- " + this.currentPlayerIndex);
-      console.log("came in if");
+    if (this.cards !== undefined && this.cards.length == 14) {
       this.socket.emit("changePlayer", this.currentPlayerIndex);
 
       if (this.openCard.length === 1) {
@@ -121,9 +148,7 @@ export class CardSectionComponent implements OnInit {
         event.currentIndex
       );
       this.socket.emit("updateOpenCard", this.openCard);
-      console.log(this.openCard);
-    } else if (this.cards.length == 13) {
-      console.log("came in else if");
+    } else if (this.cards !== undefined && this.cards.length == 13) {
       this.cards.push(event.container.data[0]);
       this.openCard.pop();
       transferArrayItem(
@@ -139,10 +164,7 @@ export class CardSectionComponent implements OnInit {
   }
 
   dropDeckTopCard(event: CdkDragDrop<string[]>) {
-    console.log("came in deck drop");
-    console.log(event);
-    console.log(this.cards);
-    if (this.cards.length < 14) {
+    if (this.cards !== undefined && this.cards.length < 14) {
       this.cards.push(event.container.data[0]);
       transferArrayItem(
         event.previousContainer.data,
@@ -153,24 +175,47 @@ export class CardSectionComponent implements OnInit {
       this.isDisabled = false;
       this.deck.shift();
       this.socket.emit("updateDeck", this.deck);
-      // console.log(this.deck);
     }
   }
 
   onFold(playerIndex: number) {
-    this.openConfirmationDialog(playerIndex);
+    this.openConfirmationDialogForFold(playerIndex);
   }
 
-  public openConfirmationDialog(playerIndex: number) {
+  onDeclare(playerIndex: number) {
+    this.openConfirmationToDeclare(playerIndex);
+  }
+
+  openConfirmationToDeclare(playerIndex: number) {
+    this.dialogService
+      .confirm("Please confirm", "Do you really want to declare .. ?")
+      .then((confirmed) => {
+        this.declaredFlag = true;
+        this.winnerIndex = playerIndex;
+      })
+      .catch(() => {
+        console.log("continue playing");
+      });
+  }
+
+  openConfirmationDialogForFold(playerIndex: number) {
     this.dialogService
       .confirm("Please confirm..", "Do you really want to fold ... ?")
-      .then((confirmed) => console.log("User confirmed:", confirmed))
-      .catch(() =>
-        console.log("Continue")
-      );
+      .then((confirmed) => {
+        if (confirmed) {
+          this.byPassFoldedHands(playerIndex);
+        }
+      })
+      .catch(() => console.log("Continue"));
+  }
+
+  byPassFoldedHands(playerIndex) {
+    this.socket.emit("updateIsFoldedFlag", playerIndex);
+    this.socket.emit("changePlayer", playerIndex);
   }
 
   distribute() {
+    this.isGameStarted = false;
     const roomId: string = this.router.url.split("/")[2];
     this.commonService.setUpdatedCards(roomId);
     setTimeout(() => {

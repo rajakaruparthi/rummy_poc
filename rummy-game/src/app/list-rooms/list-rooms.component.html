@@ -1,26 +1,40 @@
-<table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Total players</th>
-      <th scope="col">Enter Room</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let room of roomsList; let i = index;">
-      <th scope="row">{{ room.id }}</th>
-      <td>{{ room.roomname}}</td>
-      <td>
-        {{room.playersList.length}}
-      </td>
-        <button class="btn btn-danger" id="delete_room_{{room.id}}" (click)="deleteRoom(i, room.id)">Delete</button>
-        <button class="button" id="enter_room_{{room.id}}" routerLink="{{room.id}}/mainscreen" (click)="enterToRoom(room.id)">Join Room</button>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+<div class="center" style="margin: auto;">
+  <div class="white-pane">
 
-<button class="btn btn-secondary" routerLink="/create-room">Create Room</button> &nbsp;
-<button class="btn btn-primary" (click)="onRefresh()">Refresh</button>
-
+    <h5>List of Rooms: </h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let room of roomsList; let i = index">
+          <th scope="row">{{ room.id.substr(room.id.length-5, room.id.length) }}</th>
+          <td>{{ room.roomname }}</td>
+          <span style="width: 100px;">
+            <button
+              class="btn btn-danger"
+              id="delete_room_{{ room.id }}"
+              (click)="deleteRoom(i, room.id)"
+            >
+              Delete
+            </button>
+            <button
+              class="btn btn-primary"
+              id="enter_room_{{ room.id }}"
+              routerLink="{{ room.id }}/mainscreen"
+              (click)="enterToRoom(room.id)"
+            >
+              Join
+            </button>
+          </span>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" (click)="onRefresh()">Refresh</button>
+  </div>
+</div>

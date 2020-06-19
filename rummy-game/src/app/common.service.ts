@@ -51,7 +51,7 @@ export class CommonService implements OnInit {
   users = this.socket.fromEvent<Player[]>("users");
 
   setGameCreator(creator: string){
-    this.gameCreator = new Player(creator);
+    this.gameCreator = new Player(creator, false);
   }
 
   addPlayerToRoom(roomId) {

@@ -9,10 +9,12 @@ import { PlayersRoomListComponent } from './players-room-list/players-room-list.
 import { ListRoomsResolver } from './resolvers/list-rooms-resolver';
 import { ListUsersResolver } from './resolvers/list-users-resolver';
 import { AdminPageComponent } from './admin-page/admin-page.component';
+import { JoinCreateTableComponent } from './join-create-table/join-create-table.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'guest', component: GuestPageComponent},
+  {path: 'guest/table', component: JoinCreateTableComponent},
   {path: 'listrooms', component: ListRoomsComponent, resolve: [ListRoomsResolver]},
   {path: 'create-room', component: CreateRoomComponent},
   {path: 'admin-page', component: AdminPageComponent},

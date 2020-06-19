@@ -1,20 +1,47 @@
 <form class="form-inline" #f="ngForm">
+  <div class="input-group mb-3 guest">
+    <input
+      type="text"
+      [(ngModel)]="userName"
+      name="username"
+      placeholder="Name ..."
+      class="form-control"
+    />
+    <div class="input-group-append">
+      <button
+        type="submit"
+        [disabled]="userName === ''"
+        routerLink="table"
+        (click)="onClickViewRooms(userName)"
+        id="bdg-learn-sub-button-ebook-programming-for-profits"
+        class="btn btn-primary mb-2"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+
+  <!-- 
   <div class="form-group mx-sm-3 mb-2">
     <label for="name">Name </label>
-    <input type="text" 
-          id="name" 
-          autocomplete="off" 
-          class="form-control mx-sm-3" 
-          aria-describedby="passwordHelpInline" 
-          [(ngModel)]="userName" 
-          name="username">
-  </div>
-  <button type="submit" 
-          class="btn btn-primary mb-2" 
-          [disabled]="userName ===''" 
-          routerLink="/listrooms"
-          (click)="onClickViewRooms(userName)">View Rooms</button>
+    <input
+      type="text"
+      id="name"
+      autocomplete="off"
+      class="form-control mx-sm-3"
+      aria-describedby="passwordHelpInline"
+      [(ngModel)]="userName"
+      name="username"
+    />
+
+    <button
+      type="submit"
+      class="btn btn-primary mb-2"
+      [disabled]="userName === ''"
+      routerLink="/listrooms"
+      (click)="onClickViewRooms(userName)"
+    >
+      Enter
+    </button>
+  </div> -->
 </form>
-
-
-

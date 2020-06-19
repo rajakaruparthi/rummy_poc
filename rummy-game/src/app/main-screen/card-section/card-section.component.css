@@ -1,79 +1,216 @@
-ul#menu li {
-  display:inline;
-}
-.blinking{
-    animation:blinkingText 2s infinite;
+#container {
+  display: block;
 }
 
-@keyframes blinkingText{
-    0%{     color: #022175;    }
-    49%{    color: #022175; }
-    60%{    color: transparent; }
-    99%{    color:transparent;  }
-    100%{   color: #022175;    }
+.currentUser {
+  top: 548px;
+  left: 328px;
+  padding: 5px;
+  border-radius: 35px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #707070;
+  opacity: 1;
+}
+
+td {
+  width: 98px;
+  padding: 0 15px 0 15px;
+  border-spacing: 10px;
+}
+
+@media only screen and (orientation: portrait) {
+  #container {
+    height: 100vw;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  #container {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+}
+
+.playerNameCss {
+  top: 566px;
+  left: 344px;
+  width: 41px;
+  height: 36px;
+  text-align: left;
+  font: Bold 30px/37px Helvetica Neue;
+  letter-spacing: 0px;
+  color: #1C2331;
+  opacity: 1;
+}
+
+.openCardDiv {
+  border-style: solid;
+  color: gray;
+  height: 120px;
+  width: 80px;
+  border-radius: 10px;
 }
 
 table {
-  border-spacing: 1em .5em;
-  padding: 0 2em 1em 0;
-  border: 1px solid orange;
+  border-collapse: separate;
+  border-spacing: 15px;
 }
 
-td {
-  width: 1.5em;
-  height: 1.5em;
-  background: #d2d2d2;
-  text-align: center;
-  vertical-align: middle;
+.player {
+  top: 40px;
+  left: 50px;
+  width: 98px;
+  height: 38px;
+  color: black;
+  background: #ffff00 0% 0% no-repeat padding-box;
+  /* border: 1px solid #ffff00; */
+  border-radius: 15px;
+  opacity: 1;
 }
 
-td.selected {
-  -webkit-animation: pulse-border 1s infinite;
+.deckAndJoker {
+  top: 119px;
+  width: 472px;
+  background: #bc8f8f 0% 0% no-repeat padding-box;
+  border: 1px solid #707070;
+  border-radius: 20px;
+  opacity: 1;
+  margin: auto;
+}
+
+.grid {
+  display: grid;
+  /* grid-template-columns: repeat(3, minmax(1fr, 700px)); doesn't work as expected */
+  grid-template-rows: 50px 150px 150px;
+  grid-gap: 10px;
+  margin-bottom: 10px;
+  max-height: 375px;
+}
+
+.btn-group button {
+  background-color: #4caf50; /* Green background */
+  border: 1px solid green; /* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  width: 50%; /* Set a width if needed */
+  display: block; /* Make the buttons appear below each other */
+}
+
+.btn-group button:not(:last-child) {
+  border-bottom: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: #3e8e41;
+}
+
+.grid .item {
+  /* background-color: teal; */
+}
+/* 
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(3, auto); 
+  grid-template-rows: 50px 50px 50px;
+  grid-gap: 10px;
+}
+
+.grid2 .item {
+  max-width: 300px;
+  background-color: teal;
+} */
+
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+}
+
+ul#menu li {
+  display: inline;
+}
+.blinking {
+  animation: blinkingText 2s infinite;
+}
+
+@-webkit-keyframes borderBlink {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: greenyellow;
+  }
+}
+@keyframes borderBlink {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: greenyellow;
+  }
+}
+.borderBlink {
+  border: 3px solid greenyellow;
+  /* add 'border-color: transparent' if you wish no border to show initially */
+}
+
+.borderBlink:hover {
+  -webkit-animation: borderBlink 1s step-end infinite;
+  animation: borderBlink 1s step-end infinite;
+}
+
+@keyframes blinkingText {
+  0% {
+    color: #022175;
+  }
+  49% {
+    color: #022175;
+  }
+  60% {
+    color: transparent;
+  }
+  99% {
+    color: transparent;
+  }
+  100% {
+    color: #022175;
+  }
 }
 
 @-webkit-keyframes pulse-border {
-  from, to { box-shadow: 0 0 0 0 #022175;}
-  50% { box-shadow: 0 0 0 4px #022175; }
+  from,
+  to {
+    box-shadow: 0 0 0 0 #022175;
+  }
+  50% {
+    background-color: #022175;
+  }
 }
 
-td.t {
-  border: 4px solid #022175;
-  width: 50px;
-}
-
-td.top {
-  border-bottom: 4px dashed #022175;
-}
-td.left {
-  border-right: 4px dashed #022175;
-}
-td.right {
-  border-left: 4px dashed #022175;
-}
-td.bottom {
-  border-top: 4px dashed #022175;
-}
-td.middle {
-  border: 4px dashed #022175;
-}
-td {
-  background: steelblue;
-  height: 54px;
-  width: 25%;
-  font-weight: lighter;
-  text-shadow: 0 1px 0 #022175;
-  color: white;
-  border: 1px solid #38678f;
-  box-shadow: inset 0px 1px 2px #568ebd;
-  transition: all 0.2s;
-}
-
-.disableDiv{
-  pointer-events:none;
+.disableDiv {
+  pointer-events: none;
 }
 
 .rotateimg90 {
-  -webkit-transform:rotate(90deg);
+  -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   -o-transform: rotate(90deg);
@@ -85,7 +222,7 @@ td {
   min-height: 100px;
   display: flex;
   flex-direction: row;
-  background: white;
+  /* background: white; */
   border-radius: 1px;
   overflow: visible;
 }
@@ -95,7 +232,7 @@ td {
   min-height: 100px;
   display: flex;
   flex-direction: row;
-  background: white;
+  /* background: white; */
   border-radius: 1px;
   overflow: visible;
 }
@@ -107,7 +244,7 @@ td {
   justify-content: space-between;
   box-sizing: border-box;
   cursor: move;
-  background: white;
+  /* background: white; */
   font-size: 14px;
   flex-grow: 1;
   flex-basis: 0;
@@ -117,8 +254,7 @@ td {
   box-sizing: border-box;
   border-radius: 1px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {
