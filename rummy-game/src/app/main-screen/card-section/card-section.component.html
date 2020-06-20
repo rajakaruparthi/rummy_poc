@@ -9,7 +9,7 @@
 
 >-->
 <div class="currentUser" style="float: right;">
-  <span class="playerNameCss">RK</span>
+  <span class="playerNameCss">{{currentPlayer}}</span>
 </div>
 <div id="container">
   <div class="grid">
@@ -17,13 +17,14 @@
       <div>
         <table>
           <tr>
-            <td
+            <td 
               class="player"
               *ngFor="let usr of playersObs | async; let i = index"
+              [ngClass]="{folded: usr.folded}"
               [ngClass]="{ selected: i == currentPlayerIndex }"
               style="text-align: center; padding: 10px;"
             >
-              {{ usr.name }}
+              {{ usr.name }} 
             </td>
           </tr>
         </table>
@@ -31,6 +32,7 @@
       <!-- *ngIf="startFlag" -->
       <div>
         <button
+          *ngIf="startFlag" 
           class="btn btn-danger"
           (click)="distribute(); isGameStarted = true"
           style="float: right;"
@@ -59,7 +61,7 @@
               <img
                 *ngIf="deck.length > 0"
                 cdkDrag
-                style="width: 40%;  border-radius: 10px; "
+                style="width: 40%; border-radius: 10px;"
                 src="../../assets/cards/Yellow_back.jpg"
               />
               <!-- transform: rotate(90deg); -->
@@ -74,6 +76,7 @@
         <div class="col-xs-3 col-3">
           <!-- [ngClass]="{ disableDiv: currentPlayer != player }" -->
           <div
+           [ngClass]="{ disableDiv: currentPlayer != player }" 
             id="openCardDiv"
             class="openCardDiv"
             cdkDropList
@@ -82,12 +85,12 @@
             [cdkDropListConnectedTo]="[cardList]"
             (cdkDropListDropped)="dropOpenCard($event)"
           >
-          <img
-            cdkDrag
-            style="width: 107%; border-radius: 10px; "
-            src="../../assets/cards/{{ openCard[0] }}.jpg"
-          />
-        </div>
+            <img
+              cdkDrag
+              style="width: 107%; border-radius: 10px;"
+              src="../../assets/cards/{{ openCard[0] }}.jpg"
+            />
+          </div>
         </div>
         <div class="col-xs-3 col-3">
           <button

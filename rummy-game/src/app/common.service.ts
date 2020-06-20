@@ -55,14 +55,18 @@ export class CommonService implements OnInit {
   }
 
   addPlayerToRoom(roomId) {
-    this.socket.emit("addUser", this.getPlayerName());
-    const playerName = this.getPlayerName();
-    const addPlayerReq = new AddPlayerRequest(roomId, playerName);
-    this.http
-      .post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq)
-      .subscribe((data) => {
-        this.setPlayersList(data.playersList);
-      });
+    const player = this.getPlayerName();
+    console.log(player);
+    if(player != null ){ 
+      this.socket.emit("addUser", this.getPlayerName());
+      const playerName = this.getPlayerName();
+      const addPlayerReq = new AddPlayerRequest(roomId, playerName);
+      this.http
+        .post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq)
+        .subscribe((data) => {
+          this.setPlayersList(data.playersList);
+        });
+    }
   }
 
   createRoom(roomName: string, password: string) {

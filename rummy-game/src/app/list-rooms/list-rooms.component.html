@@ -8,6 +8,7 @@
           <th scope="col">#</th>
           <th scope="col">Name</th>
           <th scope="col"></th>
+          <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody>
@@ -31,7 +32,7 @@
               Join
             </button>
           </span>
-          <td></td>
+        <td> <b *ngIf="gameStartedFlag" style="color: darkgreen;">Started</b></td>
         </tr>
       </tbody>
     </table>

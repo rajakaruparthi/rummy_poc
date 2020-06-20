@@ -1,39 +1,38 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy
-} from '@angular/core';
-import { CommonService } from '../common.service';
-import { Rooms } from '../models/rooms.model';
-import { Subject, Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Socket } from "ngx-socket-io";
+import { CommonService } from "../common.service";
+import { Rooms } from "../models/rooms.model";
+import { Subject, Subscription } from "rxjs";
 
 @Component({
-  selector: 'app-list-rooms',
-  templateUrl: './list-rooms.component.html',
-  styleUrls: ['./list-rooms.component.css'],
+  selector: "app-list-rooms",
+  templateUrl: "./list-rooms.component.html",
+  styleUrls: ["./list-rooms.component.css"],
 })
 export class ListRoomsComponent implements OnInit, OnDestroy {
   roomsList: Rooms[];
   subscription: Subscription;
+  gameStartedFlag = false;
   roomsChanged = new Subject<Rooms[]>();
-  constructor(private commonService: CommonService) {}
+  gameStartedEmitter = this.socket
+    .fromEvent<boolean>("gameStarted")
+    .subscribe((data) => (this.gameStartedFlag = data));
+  constructor(private commonService: CommonService, private socket: Socket) {}
 
   ngOnInit() {
-
     // window.addEventListener('beforeunload', function (e) {
     //   const confirmationMessage = '\o/';
     //   console.log('cond');
-    //   e.returnValue = confirmationMessage;     
-    //   return confirmationMessage;              
+    //   e.returnValue = confirmationMessage;
+    //   return confirmationMessage;
     // });
 
     this.roomsList = this.commonService.getRooms();
-    this.subscription = this.commonService.roomsChanged
-      .subscribe(
-        (rooms: Rooms[]) => {
-          this.roomsList = rooms;
-        }
-      );
+    this.subscription = this.commonService.roomsChanged.subscribe(
+      (rooms: Rooms[]) => {
+        this.roomsList = rooms;
+      }
+    );
   }
 
   ngOnDestroy() {

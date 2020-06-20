@@ -34,7 +34,7 @@ export class CardSectionComponent implements OnInit {
   declaredFlag = false;
   currentPlayerIndex = 0;
   currentPlayer = "";
-  winnerIndex: number = null ;
+  winnerIndex: number = null;
 
   playerCardsEmiter = this.socket.fromEvent<PlayerCardsModel[]>("cards");
 
@@ -106,38 +106,38 @@ export class CardSectionComponent implements OnInit {
     }
   }
 
-  dropOpenCard1(event: CdkDragDrop<string[]>) {
-    if (this.cards !== undefined && this.cards.length == 14) {
-      this.socket.emit("changePlayer", this.currentPlayerIndex);
-      if (this.openCard.length === 1) {
-        this.openCard.shift();
-      }
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-      this.socket.emit("updateOpenCard", this.openCard);
-    } else if (this.cards.length == 13) {
-      this.cards.push(event.container.data[0]);
-      this.openCard.pop();
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      alert("Size should be 13");
-    }
-  }
+  // dropOpenCard1(event: CdkDragDrop<string[]>) {
+  //   if (this.cards !== undefined && this.cards.length == 14) {
+  //     this.socket.emit("changePlayer", this.currentPlayerIndex);
+  //     if (this.openCard.length === 1) {
+  //       this.openCard.shift();
+  //     }
+  //     transferArrayItem(
+  //       event.previousContainer.data,
+  //       event.container.data,
+  //       event.previousIndex,
+  //       event.currentIndex
+  //     );
+  //     this.socket.emit("updateOpenCard", this.openCard);
+  //   } else if (this.cards.length == 13) {
+  //     this.cards.push(event.container.data[0]);
+  //     this.openCard.pop();
+  //     transferArrayItem(
+  //       event.previousContainer.data,
+  //       event.container.data,
+  //       event.previousIndex,
+  //       event.currentIndex
+  //     );
+  //   } else {
+  //     alert("Size should be 13");
+  //   }
+  // }
 
   dropOpenCard(event: CdkDragDrop<string[]>) {
     console.log(event);
     if (this.cards !== undefined && this.cards.length == 14) {
       this.socket.emit("changePlayer", this.currentPlayerIndex);
-
+      console.log("came in if");
       if (this.openCard.length === 1) {
         this.openCard.shift();
       }
@@ -149,6 +149,7 @@ export class CardSectionComponent implements OnInit {
       );
       this.socket.emit("updateOpenCard", this.openCard);
     } else if (this.cards !== undefined && this.cards.length == 13) {
+      console.log("came in else");
       this.cards.push(event.container.data[0]);
       this.openCard.pop();
       transferArrayItem(
@@ -187,6 +188,10 @@ export class CardSectionComponent implements OnInit {
   }
 
   openConfirmationToDeclare(playerIndex: number) {
+    console.log("came");
+    this.playerCardsEmiter.subscribe((data) => {
+      console.log(data);
+    });
     this.dialogService
       .confirm("Please confirm", "Do you really want to declare .. ?")
       .then((confirmed) => {
@@ -196,6 +201,7 @@ export class CardSectionComponent implements OnInit {
       .catch(() => {
         console.log("continue playing");
       });
+
   }
 
   openConfirmationDialogForFold(playerIndex: number) {

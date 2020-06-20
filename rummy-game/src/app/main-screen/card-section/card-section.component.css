@@ -2,6 +2,33 @@
   display: block;
 }
 
+.player {
+  top: 40px;
+  left: 50px;
+  width: 98px;
+  height: 38px;
+  color: white;
+  background: #004040 0% 0% no-repeat padding-box;
+  /* border: 1px solid #ffff00; */
+  border-radius: 15px;
+  opacity: 1;
+}
+
+.deckAndJoker {
+  top: 119px;
+  width: 472px;
+  background: #cdeff1 0% 0% no-repeat padding-box;
+  border: 1px solid #707070;
+  border-radius: 20px;
+  opacity: 1;
+  margin: auto;
+}
+
+.folded {
+  background: #ffbfbf  !important;
+  color: black !important;
+}
+
 .currentUser {
   top: 548px;
   left: 328px;
@@ -10,6 +37,9 @@
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #707070;
   opacity: 1;
+}
+td.selected {
+  -webkit-animation: pulse-border 2s infinite;
 }
 
 td {
@@ -64,27 +94,6 @@ table {
   border-spacing: 15px;
 }
 
-.player {
-  top: 40px;
-  left: 50px;
-  width: 98px;
-  height: 38px;
-  color: black;
-  background: #ffff00 0% 0% no-repeat padding-box;
-  /* border: 1px solid #ffff00; */
-  border-radius: 15px;
-  opacity: 1;
-}
-
-.deckAndJoker {
-  top: 119px;
-  width: 472px;
-  background: #bc8f8f 0% 0% no-repeat padding-box;
-  border: 1px solid #707070;
-  border-radius: 20px;
-  opacity: 1;
-  margin: auto;
-}
 
 .grid {
   display: grid;
@@ -179,10 +188,10 @@ ul#menu li {
 
 @keyframes blinkingText {
   0% {
-    color: #022175;
+    color: #bc8f8f;
   }
   49% {
-    color: #022175;
+    color: #bc8f8f;
   }
   60% {
     color: transparent;
@@ -191,17 +200,17 @@ ul#menu li {
     color: transparent;
   }
   100% {
-    color: #022175;
+    color: #bc8f8f;
   }
 }
 
 @-webkit-keyframes pulse-border {
   from,
   to {
-    box-shadow: 0 0 0 0 #022175;
+    box-shadow: 0 0 0 0 #bc8f8f;
   }
   50% {
-    background-color: #022175;
+    background-color: #bc8f8f;
   }
 }
 
