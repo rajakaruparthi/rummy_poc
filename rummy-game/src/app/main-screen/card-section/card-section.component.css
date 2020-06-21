@@ -2,6 +2,13 @@
   display: block;
 }
 
+.nameTd {
+  width: 98px;
+  padding: 0 15px 0 15px;
+  border-spacing: 10px;
+}
+
+
 .player {
   top: 40px;
   left: 50px;
@@ -17,7 +24,7 @@
 .deckAndJoker {
   top: 119px;
   width: 472px;
-  background: #cdeff1 0% 0% no-repeat padding-box;
+  background: #336B87 0% 0% no-repeat padding-box;
   border: 1px solid #707070;
   border-radius: 20px;
   opacity: 1;
@@ -26,6 +33,11 @@
 
 .folded {
   background: #ffbfbf  !important;
+  color: black !important;
+}
+
+.winner {
+  background: white  !important;
   color: black !important;
 }
 
@@ -38,15 +50,44 @@
   border: 1px solid #707070;
   opacity: 1;
 }
+
 td.selected {
   -webkit-animation: pulse-border 2s infinite;
 }
 
-td {
-  width: 98px;
-  padding: 0 15px 0 15px;
-  border-spacing: 10px;
+.blinking {
+  animation: blinkingText 2s infinite;
 }
+
+
+@keyframes blinkingText {
+  0% {
+    color: #bc8f8f;
+  }
+  49% {
+    color: #bc8f8f;
+  }
+  60% {
+    color: transparent;
+  }
+  99% {
+    color: transparent;
+  }
+  100% {
+    color: #bc8f8f;
+  }
+}
+
+@-webkit-keyframes pulse-border {
+  from,
+  to {
+    box-shadow: 0 0 0 0 #bc8f8f;
+  }
+  50% {
+    background-color: #bc8f8f;
+  }
+}
+
 
 @media only screen and (orientation: portrait) {
   #container {
@@ -123,22 +164,6 @@ table {
   background-color: #3e8e41;
 }
 
-.grid .item {
-  /* background-color: teal; */
-}
-/* 
-.grid2 {
-  display: grid;
-  grid-template-columns: repeat(3, auto); 
-  grid-template-rows: 50px 50px 50px;
-  grid-gap: 10px;
-}
-
-.grid2 .item {
-  max-width: 300px;
-  background-color: teal;
-} */
-
 @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
   html {
     transform: rotate(-90deg);
@@ -154,65 +179,7 @@ table {
 ul#menu li {
   display: inline;
 }
-.blinking {
-  animation: blinkingText 2s infinite;
-}
 
-@-webkit-keyframes borderBlink {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: greenyellow;
-  }
-}
-@keyframes borderBlink {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: greenyellow;
-  }
-}
-.borderBlink {
-  border: 3px solid greenyellow;
-  /* add 'border-color: transparent' if you wish no border to show initially */
-}
-
-.borderBlink:hover {
-  -webkit-animation: borderBlink 1s step-end infinite;
-  animation: borderBlink 1s step-end infinite;
-}
-
-@keyframes blinkingText {
-  0% {
-    color: #bc8f8f;
-  }
-  49% {
-    color: #bc8f8f;
-  }
-  60% {
-    color: transparent;
-  }
-  99% {
-    color: transparent;
-  }
-  100% {
-    color: #bc8f8f;
-  }
-}
-
-@-webkit-keyframes pulse-border {
-  from,
-  to {
-    box-shadow: 0 0 0 0 #bc8f8f;
-  }
-  50% {
-    background-color: #bc8f8f;
-  }
-}
 
 .disableDiv {
   pointer-events: none;

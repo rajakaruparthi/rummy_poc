@@ -9,7 +9,9 @@
 
 >-->
 <div class="currentUser" style="float: right;">
-  <span class="playerNameCss">{{currentPlayer}}</span>
+  <span *ngIf="player != undefined" class="playerNameCss">{{
+    player.substring(0, 1).toUpperCase()
+  }}</span>
 </div>
 <div id="container">
   <div class="grid">
@@ -17,22 +19,25 @@
       <div>
         <table>
           <tr>
-            <td 
+            <td
               class="player"
               *ngFor="let usr of playersObs | async; let i = index"
-              [ngClass]="{folded: usr.folded}"
-              [ngClass]="{ selected: i == currentPlayerIndex }"
-              style="text-align: center; padding: 10px;"
+              [ngClass]="{
+                selected: i == currentPlayerIndex,
+                folded: usr.folded
+              }"
+              style="text-align: center;"
             >
-              {{ usr.name }} 
+              {{ usr.name }}
             </td>
           </tr>
         </table>
       </div>
       <!-- *ngIf="startFlag" -->
       <div>
+        {{declaredFlag}}
         <button
-          *ngIf="startFlag" 
+          *ngIf="startFlag"
           class="btn btn-danger"
           (click)="distribute(); isGameStarted = true"
           style="float: right;"
@@ -42,11 +47,19 @@
         </button>
       </div>
     </div>
+    <div *ngIf="declaredFlag">
+      <h3 style="color: darkgrey;">{{ winnerIndex }} declared the show</h3>
+      <h3>
+        View the final cards:
+        <button class="btn btn-secondary" routerLink="view" (click)="viewFinalCards()">
+          View
+        </button>
+      </h3>
+    </div>
     <div class="deckAndJoker">
-      <!-- <div class="item"> -->
       <div class="row" style="padding: 20px;">
         <div class="col-xs-6 col-6">
-          <div *ngIf="winnerIndex === null">
+          <div>
             <div
               [ngClass]="{ disableDiv: currentPlayer != player }"
               cdkDropList
@@ -74,9 +87,8 @@
           </div>
         </div>
         <div class="col-xs-3 col-3">
-          <!-- [ngClass]="{ disableDiv: currentPlayer != player }" -->
           <div
-           [ngClass]="{ disableDiv: currentPlayer != player }" 
+            [ngClass]="{ disableDiv: currentPlayer != player }"
             id="openCardDiv"
             class="openCardDiv"
             cdkDropList

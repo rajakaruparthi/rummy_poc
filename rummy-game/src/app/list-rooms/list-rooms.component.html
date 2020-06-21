@@ -17,22 +17,23 @@
           <td>{{ room.roomname }}</td>
           <span style="width: 100px;">
             <button
-              class="btn btn-danger"
+              class="buttoncss-del"
               id="delete_room_{{ room.id }}"
               (click)="deleteRoom(i, room.id)"
             >
               Delete
             </button>
             <button
-              class="btn btn-primary"
+              class="buttoncss-join"
               id="enter_room_{{ room.id }}"
               routerLink="{{ room.id }}/mainscreen"
               (click)="enterToRoom(room.id)"
+              [disabled]="gameStartedFlag"
             >
               Join
             </button>
           </span>
-        <td> <b *ngIf="gameStartedFlag" style="color: darkgreen;">Started</b></td>
+        <td><b *ngIf="gameStartedFlag" style="color: darkgreen;">Started</b></td>
         </tr>
       </tbody>
     </table>

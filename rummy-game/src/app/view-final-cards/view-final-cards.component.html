@@ -1,0 +1,34 @@
+<table>
+  <tr *ngFor="let each of finalCardsResponse.playersAttrsList; let i = index">
+    <td class="player"
+      style="text-align: center;">
+      {{each.name}}
+    </td>
+    <td>
+        <div
+        cdkDropList
+        #cardList="cdkDropList"
+        [cdkDropListData]="each.cards"
+        cdkDropListOrientation="horizontal"
+        class="example-list"
+        (cdkDropListDropped)="drop($event, each)"
+      >
+        <!--  -->
+        <div
+          id="cardsInHand"
+          class="example-box"
+          *ngFor="let image of each.cards; let i = index"
+          cdkDrag
+        >
+          <img
+            style="width: 150%; border-radius: 10px;"
+            src="../../assets/cards/{{ image }}.jpg"
+          />
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+

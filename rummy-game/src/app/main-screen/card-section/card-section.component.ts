@@ -12,6 +12,7 @@ import { Socket } from "ngx-socket-io";
 import { Player } from "src/app/models/player.model";
 import { PlayerCardsModel } from "src/app/models/player-cards.model";
 import { ConfirmDialogService } from "src/app/confirm-dialog.service";
+import { FinalCardsModel } from "src/app/models/final-cards.model";
 
 @Component({
   selector: "app-card-section",
@@ -35,6 +36,7 @@ export class CardSectionComponent implements OnInit {
   currentPlayerIndex = 0;
   currentPlayer = "";
   winnerIndex: number = null;
+  finalShowCards = [];
 
   playerCardsEmiter = this.socket.fromEvent<PlayerCardsModel[]>("cards");
 
@@ -58,6 +60,15 @@ export class CardSectionComponent implements OnInit {
     .fromEvent<Player>("currentPlayer")
     .subscribe((data) => (this.currentPlayer = data.name));
 
+  declaredFlagEmitter = this.socket
+    .fromEvent<boolean>("declaredFlag")
+    .subscribe((data) => (this.declaredFlag = data));
+
+  winnerIndexEmitter = this.socket.fromEvent<number>("winnerIndex");
+
+  finalShowCardsEmitter = this.socket.fromEvent<FinalCardsModel[]>("finalShowCards");
+
+  //finalShowCards
   player: string;
 
   playersObs: Observable<Player[]>;
@@ -106,38 +117,9 @@ export class CardSectionComponent implements OnInit {
     }
   }
 
-  // dropOpenCard1(event: CdkDragDrop<string[]>) {
-  //   if (this.cards !== undefined && this.cards.length == 14) {
-  //     this.socket.emit("changePlayer", this.currentPlayerIndex);
-  //     if (this.openCard.length === 1) {
-  //       this.openCard.shift();
-  //     }
-  //     transferArrayItem(
-  //       event.previousContainer.data,
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex
-  //     );
-  //     this.socket.emit("updateOpenCard", this.openCard);
-  //   } else if (this.cards.length == 13) {
-  //     this.cards.push(event.container.data[0]);
-  //     this.openCard.pop();
-  //     transferArrayItem(
-  //       event.previousContainer.data,
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex
-  //     );
-  //   } else {
-  //     alert("Size should be 13");
-  //   }
-  // }
-
   dropOpenCard(event: CdkDragDrop<string[]>) {
-    console.log(event);
     if (this.cards !== undefined && this.cards.length == 14) {
       this.socket.emit("changePlayer", this.currentPlayerIndex);
-      console.log("came in if");
       if (this.openCard.length === 1) {
         this.openCard.shift();
       }
@@ -149,7 +131,6 @@ export class CardSectionComponent implements OnInit {
       );
       this.socket.emit("updateOpenCard", this.openCard);
     } else if (this.cards !== undefined && this.cards.length == 13) {
-      console.log("came in else");
       this.cards.push(event.container.data[0]);
       this.openCard.pop();
       transferArrayItem(
@@ -158,10 +139,17 @@ export class CardSectionComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
-      console.log(this.openCard);
+      console.log(this.currentPlayerIndex + "--- " + "came in else if");
+      console.log(this.cards);
     } else {
       alert("Size should be 13");
     }
+
+    const playerCards = [];
+    playerCards[0] = this.currentPlayerIndex;
+    playerCards[1] = this.cards;
+    console.log(playerCards);
+    this.socket.emit("updatePlayersCards", playerCards);
   }
 
   dropDeckTopCard(event: CdkDragDrop<string[]>) {
@@ -186,22 +174,32 @@ export class CardSectionComponent implements OnInit {
   onDeclare(playerIndex: number) {
     this.openConfirmationToDeclare(playerIndex);
   }
+  viewFinalCards() {
+    // this.router.navigate(["view"]);
+  }
 
   openConfirmationToDeclare(playerIndex: number) {
-    console.log("came");
-    this.playerCardsEmiter.subscribe((data) => {
-      console.log(data);
-    });
+    let players;
     this.dialogService
       .confirm("Please confirm", "Do you really want to declare .. ?")
       .then((confirmed) => {
-        this.declaredFlag = true;
         this.winnerIndex = playerIndex;
+        this.declaredFlag = true;
+        this.socket.emit("showCards", true);
+        this.socket.emit("winnerIndex", playerIndex);
+        this.finalShowCardsEmitter.subscribe((data) => {
+          this.finalShowCards = data;
+          console.log(data);
+          this.commonService.saveFinalShow(data);
+        });
+        this.winnerIndexEmitter.subscribe((data) => {
+          this.winnerIndex = data;
+        });
       })
       .catch(() => {
         console.log("continue playing");
-      });
-
+      })
+      .finally();
   }
 
   openConfirmationDialogForFold(playerIndex: number) {

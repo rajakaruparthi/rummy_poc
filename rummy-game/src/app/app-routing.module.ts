@@ -10,6 +10,7 @@ import { ListRoomsResolver } from './resolvers/list-rooms-resolver';
 import { ListUsersResolver } from './resolvers/list-users-resolver';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { JoinCreateTableComponent } from './join-create-table/join-create-table.component';
+import { ViewFinalCardsComponent } from './view-final-cards/view-final-cards.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -19,7 +20,9 @@ const routes: Routes = [
   {path: 'create-room', component: CreateRoomComponent},
   {path: 'admin-page', component: AdminPageComponent},
   {path: 'listrooms/:id/mainscreen', component: MainScreenComponent},
+  {path: 'listrooms/:id/mainscreen/view', component: ViewFinalCardsComponent},
   {path: 'listrooms/:id', component: PlayersRoomListComponent, resolve: [ListUsersResolver]}
+
 ];
 
 @NgModule({

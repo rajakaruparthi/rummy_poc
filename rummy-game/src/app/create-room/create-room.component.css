@@ -3,8 +3,7 @@
     left: 38px;
     width: 359px;
     height: 126px;
-    background: #ffffff 0% 0% no-repeat padding-box;
-    border: 2px solid #ffffff;
+    background: white 0% 0% no-repeat padding-box;
     border-radius: 11px;
     opacity: 1;
     margin: auto;
@@ -15,10 +14,11 @@
     left: 56px;
     width: 162px;
     height: 38px;
-    background: #3f729b 0% 0% no-repeat padding-box;
-    border: 1px solid #707070;
+    background: #043d6b 0% 0% no-repeat padding-box;
+    /* border: 1px solid #707070; */
     border-radius: 19px;
     opacity: 1;
+    color: white
   }
   
   .button {

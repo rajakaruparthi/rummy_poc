@@ -20,12 +20,11 @@ export class ListRoomsComponent implements OnInit, OnDestroy {
   constructor(private commonService: CommonService, private socket: Socket) {}
 
   ngOnInit() {
-    // window.addEventListener('beforeunload', function (e) {
-    //   const confirmationMessage = '\o/';
-    //   console.log('cond');
-    //   e.returnValue = confirmationMessage;
-    //   return confirmationMessage;
-    // });
+    window.addEventListener('beforeunload', function (e) {
+      const confirmationMessage = '\o/';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    });
 
     this.roomsList = this.commonService.getRooms();
     this.subscription = this.commonService.roomsChanged.subscribe(

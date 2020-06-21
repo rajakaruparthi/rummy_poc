@@ -8,6 +8,11 @@ import { AddPlayerRequest } from "./models/add-player-request.model";
 import { Player } from "./models/player.model";
 import { RoomById } from "./models/room-by-id.model";
 import { Socket } from "ngx-socket-io";
+import { FinalCardsModel } from "./models/final-cards.model";
+import { Route } from "@angular/compiler/src/core";
+import { Router } from "@angular/router";
+import { FinalCardsResponseModel } from "./models/final-cards-resp.model";
+import { PlayersAttr } from "./models/final-players-attr";
 
 @Injectable({
   providedIn: "root",
@@ -15,52 +20,60 @@ import { Socket } from "ngx-socket-io";
 export class CommonService implements OnInit {
   ngOnInit() {}
 
+  host = "localhost";
+  url = "http://" + this.host + ":8102";
   images: string[] = [];
-
   cards: string[] = [];
-
   updatedCards: string[];
-
   firstThirteen: string[] = [];
-
   shuffledDeck = [];
-
   open_card;
-
   roomsList: Rooms[] = [];
-
   playersList: Player[] = [];
-
   gameCreator: Player;
-
-  shuffleCardsUrl = "http://localhost:8102/api/shuffle-cards";
-  getRoomsUrl = "http://localhost:8102/api/get-rooms";
-  getRoomById = "http://localhost:8102/api/get-room-by-id";
-  createRoomUrl = "http://localhost:8102/api/create-room";
-  addPlayerToRoomUrl = "http://localhost:8102/api/update-room";
-  deleteRoomUrl = "http://localhost:8102/api/delete-room";
-  checkIfAdmin = "http://localhost:8102/api/is-admin";
-  addAdminUser = "http://localhost:8102/api/add-user";
-
+  shuffleCardsUrl = this.url + "/api/shuffle-cards";
+  getRoomsUrl = this.url + "/api/get-rooms";
+  getRoomById = this.url + "/api/get-room-by-id";
+  createRoomUrl = this.url + "/api/create-room";
+  addPlayerToRoomUrl = this.url + "/api/update-room";
+  deleteRoomUrl = this.url + "/api/delete-room";
+  checkIfAdmin = this.url + "/api/is-admin";
+  addAdminUser = this.url + "/api/add-user";
+  saveFinalCardsUrl = this.url + "/api/save-final-cards";
+  pullFinalCardsUrl = this.url + "/api/pull-final-cards";
+  finalShowCards = [];
   roomsChanged = new Subject<Rooms[]>();
   playerName: string;
   updatedCardResponse: ShuffleCardsResponse;
+  finalCardsResponsebyRoomid;
 
-  constructor(private http: HttpClient, private socket: Socket) {}
+  constructor(
+    private http: HttpClient,
+    private socket: Socket,
+    private router: Router
+  ) {}
 
   users = this.socket.fromEvent<Player[]>("users");
 
-  setGameCreator(creator: string){
+  setGameCreator(creator: string) {
     this.gameCreator = new Player(creator, false);
   }
 
-  addPlayerToRoom(roomId) {
+  setFinalCards(finalCards) {
+    this.finalCardsResponsebyRoomid = finalCards;
+  }
+
+  getFinalCards(): FinalCardsResponseModel {
+    return this.finalCardsResponsebyRoomid;
+  }
+
+  addPlayerToRoom(roomId: string) {
     const player = this.getPlayerName();
-    console.log(player);
-    if(player != null ){ 
+    if (player != null) {
       this.socket.emit("addUser", this.getPlayerName());
       const playerName = this.getPlayerName();
       const addPlayerReq = new AddPlayerRequest(roomId, playerName);
+      console.log(addPlayerReq);
       this.http
         .post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq)
         .subscribe((data) => {
@@ -70,7 +83,9 @@ export class CommonService implements OnInit {
   }
 
   createRoom(roomName: string, password: string) {
-    const room = new Rooms(null, roomName, password, this.playersList);
+    const room = new Rooms(null, roomName, password, null);
+    console.log(room);
+    console.log(this.playersList);
     return this.http
       .post(this.createRoomUrl, room, { responseType: "json" })
       .toPromise();
@@ -85,15 +100,48 @@ export class CommonService implements OnInit {
     this.roomsChanged.next(this.roomsList.slice());
   }
 
+  saveFinalShow(finalCards: FinalCardsModel[]) {
+    const roomid = this.router.url.split("/")[2];
+    console.log(finalCards);
+    this.http
+      .post(this.saveFinalCardsUrl + "/" + roomid, finalCards)
+      .subscribe();
+
+    setTimeout(() => {
+      this.pullFinalShowCards();
+    }, 300);
+  }
+
+  pullFinalShowCards(): FinalCardsResponseModel {
+    console.log("came in pull final show cards");
+    const roomId = this.router.url.split("/")[2];
+    const roomById = new RoomById(roomId);
+    let finalCardsResponse: FinalCardsResponseModel = null;
+    let playersAttr : PlayersAttr[] = [];
+    this.http
+      .post<FinalCardsResponseModel>(this.pullFinalCardsUrl, roomById)
+      .subscribe((data) => {
+        console.log(data);
+        data.playersAttrsList.forEach(each => {
+          playersAttr.push(new PlayersAttr(each.cards, each.folded, each.name));
+        });
+        
+        finalCardsResponse = new FinalCardsResponseModel(
+          data.roomId,
+          playersAttr
+        );
+       this.setFinalCards(finalCardsResponse);
+      });
+      console.log(finalCardsResponse);
+    return finalCardsResponse;
+  }
+
   setUpdatedCards(roomId: string) {
     const shuffleCardsReq = { roomId: roomId };
-    console.log(roomId);
     let response: ShuffleCardsResponse = null;
     this.http
       .post<ShuffleCardsResponse>(this.shuffleCardsUrl, shuffleCardsReq)
       .subscribe((data) => {
-
-        console.log(data);
         response = new ShuffleCardsResponse(
           data.deck,
           data.openCard,
