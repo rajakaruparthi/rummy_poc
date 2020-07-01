@@ -12,6 +12,7 @@ import { Subject, Subscription } from "rxjs";
 export class ListRoomsComponent implements OnInit, OnDestroy {
   roomsList: Rooms[];
   subscription: Subscription;
+  playerName: string;
   gameStartedFlag = false;
   roomsChanged = new Subject<Rooms[]>();
   gameStartedEmitter = this.socket
@@ -32,6 +33,7 @@ export class ListRoomsComponent implements OnInit, OnDestroy {
         this.roomsList = rooms;
       }
     );
+    this.playerName = this.commonService.getPlayerName();
   }
 
   ngOnDestroy() {

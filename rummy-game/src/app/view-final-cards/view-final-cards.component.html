@@ -1,34 +1,39 @@
-<table>
-  <tr *ngFor="let each of finalCardsResponse.playersAttrsList; let i = index">
-    <td class="player"
-      style="text-align: center;">
-      {{each.name}}
-    </td>
-    <td>
-        <div
-        cdkDropList
-        #cardList="cdkDropList"
-        [cdkDropListData]="each.cards"
-        cdkDropListOrientation="horizontal"
-        class="example-list"
-        (cdkDropListDropped)="drop($event, each)"
-      >
-        <!--  -->
-        <div
-          id="cardsInHand"
-          class="example-box"
-          *ngFor="let image of each.cards; let i = index"
-          cdkDrag
-        >
-          <img
-            style="width: 150%; border-radius: 10px;"
-            src="../../assets/cards/{{ image }}.jpg"
-          />
-        </div>
-      </div>
-    </td>
-  </tr>
-</table>
-
-
-
+<div class="row">
+  <div class="col-auto mr-auto">
+    <button class="btn btn-secondary" (click)="onStartNewGame()" style="float: left">
+      New Game
+    </button>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" (click)="onManagePlayers()" style="float: right;">
+      Manage Players
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div *ngIf="playersAttr !== null" class="row" style="margin-top: 10px">
+    <table *ngIf="playersAttr !== undefined">
+      <tr *ngFor="let each of playersAttr.playersAttrsList; let i = index; ">
+        <td class="player" style="text-align: center; padding: 10px" [ngClass]="{folded: each.folded}">
+          {{each.name}}
+        </td>
+        <td>
+          <div cdkDropList #cardList="cdkDropList" [cdkDropListData]="each.cards" cdkDropListOrientation="horizontal" class="example-list"
+            (cdkDropListDropped)="drop($event, each.cards)">
+            <div class="example-box" *ngFor="let image of each.cards; let i = index" cdkDrag>
+              <img style="width: 150%; border-radius: 10px;" src="../../assets/cards/{{ image }}.jpg" />
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col-auto mr-auto">
+    <button (click)="onRefresh()" style="margin-top: 10px" class="btn btn-danger">Reload</button>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-success" (click)="onStartNewGame()" style="margin-top: 10px; float: right;">Continue</button>
+  </div>
+</div>

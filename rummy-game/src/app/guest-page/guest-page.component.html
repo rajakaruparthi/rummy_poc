@@ -1,24 +1,33 @@
 <form class="form-inline" #f="ngForm">
-  <div class="input-group mb-3 guest">
-    <input
-      type="text"
-      [(ngModel)]="userName"
-      name="username"
-      placeholder="Name ..."
-      class="form-control"
-    />
-    <div class="input-group-append">
-      <button
-        type="submit"
-        [disabled]="userName === ''"
-        routerLink="table"
-        (click)="onClickViewRooms(userName)"
-        id="bdg-learn-sub-button-ebook-programming-for-profits"
-        class="btn btn-primary mb-2"
-      >
-        Submit
-      </button>
-    </div>
+  <div class="whitePane">
+      <div class="input-group mb-3" style="margin-top: 40px; padding: 10px;">
+          <input
+            type="text"
+            [(ngModel)]="firstname"
+            name="firstname"
+            placeholder="Firstname ..."
+            class="form-control"
+          />
+          <input
+            type="text"
+            [(ngModel)]="lastname"
+            name="lastname"
+            placeholder="Lastname ..."
+            class="form-control"
+          />
+          <div class="input-group-append">
+            <button
+              type="submit"
+              [disabled]="!lastname || !firstname"
+              routerLink="table"
+              (click)="onClickViewRooms(firstname, lastname)"
+              id="bdg-learn-sub-button-ebook-programming-for-profits"
+              class="btn btn-primary mb-2"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
   </div>
 
   <!-- 

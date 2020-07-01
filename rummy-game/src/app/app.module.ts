@@ -25,6 +25,7 @@ import { ConfirmDialogService } from './confirm-dialog.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { JoinCreateTableComponent } from './join-create-table/join-create-table.component';
 import { ViewFinalCardsComponent } from './view-final-cards/view-final-cards.component';
+import { PlayersListComponent } from './players-list/players-list.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -46,7 +47,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     AdminPageComponent,
     DialogBoxComponent,
     JoinCreateTableComponent,
-    ViewFinalCardsComponent
+    ViewFinalCardsComponent,
+    PlayersListComponent
   ],
   imports: [
     BrowserModule,

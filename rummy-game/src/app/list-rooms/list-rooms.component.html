@@ -1,6 +1,6 @@
 <div class="center" style="margin: auto;">
+  <span style="color: white">logged in as {{playerName}}</span>
   <div class="white-pane">
-
     <h5>List of Rooms: </h5>
     <table class="table">
       <thead>
@@ -16,27 +16,21 @@
           <th scope="row">{{ room.id.substr(room.id.length-5, room.id.length) }}</th>
           <td>{{ room.roomname }}</td>
           <span style="width: 100px;">
-            <button
-              class="buttoncss-del"
-              id="delete_room_{{ room.id }}"
-              (click)="deleteRoom(i, room.id)"
-            >
+            <button class="buttoncss-del" id="delete_room_{{ room.id }}" (click)="deleteRoom(i, room.id)">
               Delete
             </button>
-            <button
-              class="buttoncss-join"
-              id="enter_room_{{ room.id }}"
-              routerLink="{{ room.id }}/mainscreen"
-              (click)="enterToRoom(room.id)"
-              [disabled]="gameStartedFlag"
-            >
+            <button class="buttoncss-join" id="enter_room_{{ room.id }}" routerLink="{{ room.id }}/mainscreen" (click)="enterToRoom(room.id)"
+              [disabled]="gameStartedFlag">
               Join
             </button>
           </span>
-        <td><b *ngIf="gameStartedFlag" style="color: darkgreen;">Started</b></td>
+          <td>
+            <b *ngIf="gameStartedFlag" style="color: darkgreen;">Started</b>
+          </td>
         </tr>
       </tbody>
     </table>
     <button class="btn btn-primary" (click)="onRefresh()">Refresh</button>
   </div>
 </div>
+

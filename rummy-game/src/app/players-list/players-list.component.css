@@ -1,25 +1,39 @@
-.white-pane {
+
+  .white-pane {
     top: 78px;
     left: 38px;
-    width: 360px;
-    height: 126px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    min-width: 360px;
+    max-width: 500px;
     background: white 0% 0% no-repeat padding-box;
     border-radius: 11px;
     opacity: 1;
     margin: auto;
-    margin-top: 120px;
+    margin-top: 20px
   }
   
-  .buttoncss {
+  .buttoncss-join {
     top: 156px;
     left: 56px;
-    width: 162px;
-    height: 38px;
+    width: 70px;
+    height: 30px;
     background: #043d6b 0% 0% no-repeat padding-box;
-    /* border: 1px solid #707070; */
-    border-radius: 19px;
+    border-radius: 15px;
     opacity: 1;
-    color: white
+    color: white;
+  }
+
+  .buttoncss-del {
+    top: 156px;
+    left: 56px;
+    width: 70px;
+    height: 30px;
+    background: #9c1d06 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    opacity: 1;
+    color: white;
   }
   
   .button {
@@ -48,7 +62,7 @@
   .fix-7-12 {
     max-width: 747px !important;
   }
-
+  
   
   
   

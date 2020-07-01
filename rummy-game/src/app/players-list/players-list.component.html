@@ -1,0 +1,29 @@
+<div class="center" style="margin: auto;">
+    <div class="white-pane">
+        <h5>List of Players: </h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let each of usersObservable | async; let i = index">
+                    <th scope="row">{{i}}</th>
+                    <td>{{ each.name }}</td>
+                    <span style="width: 100px;">
+                        <button class="buttoncss-del" (click)="deletePlayer(i)">
+                            Remove
+                        </button>
+                    </span>
+                    <td>
+                        <b *ngIf="gameStartedFlag" style="color: darkgreen;">Started</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary" (click)="onRefresh()">Refresh</button>
+    </div>
+</div>

@@ -1,52 +1,31 @@
-<!-- <span style="float: left;" *ngIf="winnerIndex === null">
-  <b style="color: darkblue;">{{ currentPlayer }}</b> is playing now ..
-</span>
-<span style="float: left;" *ngIf="winnerIndex !== null">
-  <b>{{ winnerIndex }}</b> is declaring ...
-</span>
-<span style="float: right;">
-  Logged: <b>{{ player }}</b></span 
-
->-->
-<div class="currentUser" style="float: right;">
-  <span *ngIf="player != undefined" class="playerNameCss">{{
-    player.substring(0, 1).toUpperCase()
-  }}</span>
+<span style="color: white">logged in as {{currentPlayer}}</span>
+<div class="row" *ngIf="!isGameStarted">
+  <button class="btn btn-danger" style="margin-left: 20px" (click)="distribute(); isGameStarted = true" [disabled]="isGameStarted">
+    Distribute
+  </button>
+    <span *ngIf="player != undefined" class="playerNameCss" style="float: right;">{{ player.substring(0, 1).toUpperCase() }}
+    </span>
 </div>
-<div id="container">
+
+<app-players-list *ngIf="!isGameStarted"></app-players-list>
+
+<div id="container" *ngIf="isGameStarted">
   <div class="grid">
     <div class="item">
       <div>
         <table>
           <tr>
-            <td
-              class="player"
-              *ngFor="let usr of playersObs | async; let i = index"
-              [ngClass]="{
-                selected: i == currentPlayerIndex,
-                folded: usr.folded
-              }"
-              style="text-align: center;"
-            >
-              {{ usr.name }}
+            <td class="player" *ngFor="let usr of playersObs | async; let i = index" [ngClass]="{
+                    selected: i == currentPlayerIndex,
+                    folded: usr.folded
+                  }" style="text-align: center;">
+              {{ usr.name.split(',')[0] }}
             </td>
           </tr>
         </table>
       </div>
-      <!-- *ngIf="startFlag" -->
-      <div>
-        {{declaredFlag}}
-        <button
-          *ngIf="startFlag"
-          class="btn btn-danger"
-          (click)="distribute(); isGameStarted = true"
-          style="float: right;"
-          [disabled]="isGameStarted"
-        >
-          Start
-        </button>
-      </div>
     </div>
+    
     <div *ngIf="declaredFlag">
       <h3 style="color: darkgrey;">{{ winnerIndex }} declared the show</h3>
       <h3>
@@ -56,100 +35,44 @@
         </button>
       </h3>
     </div>
+
     <div class="deckAndJoker">
       <div class="row" style="padding: 20px;">
         <div class="col-xs-6 col-6">
           <div>
-            <div
-              [ngClass]="{ disableDiv: currentPlayer != player }"
-              cdkDropList
-              #deckList="cdkDropList"
-              [cdkDropListData]="deck"
-              cdkDropListOrientation="horizontal"
-              [cdkDropListConnectedTo]="[cardList]"
-              (cdkDropListDropped)="dropDeckTopCard($event)"
-              cdkDragHandle
-            >
-              <!-- <p> -->
-              <img
-                *ngIf="deck.length > 0"
-                cdkDrag
-                style="width: 40%; border-radius: 10px;"
-                src="../../assets/cards/Yellow_back.jpg"
-              />
-              <!-- transform: rotate(90deg); -->
-              <img
-                *ngIf="openJoker !== null"
-                style="width: 40%; border-radius: 10px; z-index: -1;"
-                src="../../assets/cards/{{ openJoker }}.jpg"
+            <div [ngClass]="{ disableDiv: currentPlayer != player }" cdkDropList #deckList="cdkDropList" [cdkDropListData]="deck" cdkDropListOrientation="horizontal"
+              [cdkDropListConnectedTo]="[cardList]" (cdkDropListDropped)="dropDeckTopCard($event)" cdkDragHandle>
+              <img *ngIf="deck.length > 0" cdkDrag style="width: 40%; border-radius: 10px;" src="../../assets/cards/Yellow_back.jpg" />
+              <img *ngIf="openJoker !== null" style="width: 40%; border-radius: 10px; z-index: -1;" src="../../assets/cards/{{ openJoker }}.jpg"
               />
             </div>
           </div>
         </div>
         <div class="col-xs-3 col-3">
-          <div
-            [ngClass]="{ disableDiv: currentPlayer != player }"
-            id="openCardDiv"
-            class="openCardDiv"
-            cdkDropList
-            #openCardList="cdkDropList"
-            [cdkDropListData]="openCard"
-            [cdkDropListConnectedTo]="[cardList]"
-            (cdkDropListDropped)="dropOpenCard($event)"
-          >
-            <img
-              cdkDrag
-              style="width: 107%; border-radius: 10px;"
-              src="../../assets/cards/{{ openCard[0] }}.jpg"
-            />
+          <div [ngClass]="{ disableDiv: currentPlayer != player }" id="openCardDiv" class="openCardDiv" cdkDropList #openCardList="cdkDropList"
+            [cdkDropListData]="openCard" [cdkDropListConnectedTo]="[cardList]" (cdkDropListDropped)="dropOpenCard($event)">
+            <img cdkDrag style="width: 107%; border-radius: 10px;" src="../../assets/cards/{{ openCard[0] }}.jpg" />
           </div>
         </div>
         <div class="col-xs-3 col-3">
-          <button
-            *ngIf="currentPlayer == player"
-            (click)="onFold(currentPlayerIndex)"
-            class="btn btn-danger"
-          >
+          <button *ngIf="currentPlayer == player" (click)="onFold(currentPlayerIndex)" class="btn btn-danger">
             Fold
           </button>
           <br />
           <br />
-          <button
-            *ngIf="currentPlayer == player"
-            (click)="onDeclare(currentPlayerIndex)"
-            class="btn btn-primary"
-          >
+          <button *ngIf="currentPlayer == player" (click)="onDeclare(currentPlayerIndex)" class="btn btn-primary">
             Show
           </button>
         </div>
       </div>
-      <!-- </div> -->
     </div>
 
-    <div class="item" style="margin-top: 10px;">
+    <div class="item" style="margin-top: 10px;" *ngIf="!declaredFlag">
       <div *ngFor="let each of playerCardsEmiter | async; let i = index">
-        <div
-          [ngClass]="{ borderBlink: i == winnerIndex }"
-          *ngIf="each.name === player"
-          cdkDropList
-          #cardList="cdkDropList"
-          [cdkDropListData]="each.cards"
-          cdkDropListOrientation="horizontal"
-          [cdkDropListConnectedTo]="[openCardList]"
-          class="example-list"
-          (cdkDropListDropped)="drop($event, each.cards)"
-        >
-          <!--  -->
-          <div
-            id="cardsInHand"
-            class="example-box"
-            *ngFor="let image of each.cards; let i = index"
-            cdkDrag
-          >
-            <img
-              style="width: 180%; border-radius: 10px;"
-              src="../../assets/cards/{{ image }}.jpg"
-            />
+        <div [ngClass]="{ borderBlink: i == winnerIndex }" *ngIf="each.name === player" cdkDropList #cardList="cdkDropList" [cdkDropListData]="each.cards"
+          cdkDropListOrientation="horizontal" [cdkDropListConnectedTo]="[openCardList]" class="example-list" (cdkDropListDropped)="drop($event, each.cards)">
+          <div id="cardsInHand" class="example-box" *ngFor="let image of each.cards; let i = index" cdkDrag>
+            <img style="width: 180%; border-radius: 10px;" src="../../assets/cards/{{ image }}.jpg" />
           </div>
         </div>
       </div>

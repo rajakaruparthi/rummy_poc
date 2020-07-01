@@ -1,7 +1,6 @@
 import { Injectable, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable, Subject } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { Subject } from "rxjs";
 import { Rooms } from "./models/rooms.model";
 import { ShuffleCardsResponse } from "./models/shuffle-cards-response.model";
 import { AddPlayerRequest } from "./models/add-player-request.model";
@@ -9,16 +8,16 @@ import { Player } from "./models/player.model";
 import { RoomById } from "./models/room-by-id.model";
 import { Socket } from "ngx-socket-io";
 import { FinalCardsModel } from "./models/final-cards.model";
-import { Route } from "@angular/compiler/src/core";
 import { Router } from "@angular/router";
 import { FinalCardsResponseModel } from "./models/final-cards-resp.model";
 import { PlayersAttr } from "./models/final-players-attr";
+import { DeletePlayerRequest } from "./models/delete-player.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class CommonService implements OnInit {
-  ngOnInit() {}
+  ngOnInit() { }
 
   host = "localhost";
   url = "http://" + this.host + ":8102";
@@ -41,19 +40,25 @@ export class CommonService implements OnInit {
   addAdminUser = this.url + "/api/add-user";
   saveFinalCardsUrl = this.url + "/api/save-final-cards";
   pullFinalCardsUrl = this.url + "/api/pull-final-cards";
+  deletePlayerUrl = this.url + "/api/delete-player";
   finalShowCards = [];
   roomsChanged = new Subject<Rooms[]>();
   playerName: string;
   updatedCardResponse: ShuffleCardsResponse;
   finalCardsResponsebyRoomid;
+  finalCardsResponse;
 
   constructor(
     private http: HttpClient,
     private socket: Socket,
     private router: Router
-  ) {}
+  ) { }
 
   users = this.socket.fromEvent<Player[]>("users");
+
+  showCards = this.socket.fromEvent<FinalCardsResponseModel>("showCards");
+
+  playersAttr = this.socket.fromEvent<PlayersAttr[]>("finalShowCards");
 
   setGameCreator(creator: string) {
     this.gameCreator = new Player(creator, false);
@@ -67,10 +72,43 @@ export class CommonService implements OnInit {
     return this.finalCardsResponsebyRoomid;
   }
 
+
+  pullFinalShowCards(): FinalCardsResponseModel {
+    console.log("came in pull final show cards");
+    const roomId = this.router.url.split("/")[2];
+    const roomById = new RoomById(roomId);
+    let finalCardsResponse: FinalCardsResponseModel = null;
+    let playersAttr: PlayersAttr[] = [];
+
+    this.http
+      .post<FinalCardsResponseModel>(this.pullFinalCardsUrl, roomById)
+      .subscribe((data) => {
+        console.log(data);
+        data.playersAttrsList.forEach(each => {
+          playersAttr.push(new PlayersAttr(each.cards, each.folded, each.name));
+        });
+
+        finalCardsResponse = new FinalCardsResponseModel(
+          data.roomId,
+          playersAttr,
+          new Date()
+        );
+
+        this.socket.emit("updateFinalCardsResponse", finalCardsResponse);
+        console.log("response of subscription .... ")
+        this.showCards.subscribe(data => {
+          console.log(data);
+          this.setFinalCards(data);
+        })
+      });
+    return this.finalCardsResponsebyRoomid;
+  }
+
   addPlayerToRoom(roomId: string) {
     const player = this.getPlayerName();
+    let obj = { "name": this.getPlayerName(), "roomId": roomId };
     if (player != null) {
-      this.socket.emit("addUser", this.getPlayerName());
+      this.socket.emit("addUser", obj);
       const playerName = this.getPlayerName();
       const addPlayerReq = new AddPlayerRequest(roomId, playerName);
       console.log(addPlayerReq);
@@ -100,40 +138,43 @@ export class CommonService implements OnInit {
     this.roomsChanged.next(this.roomsList.slice());
   }
 
-  saveFinalShow(finalCards: FinalCardsModel[]) {
-    const roomid = this.router.url.split("/")[2];
-    console.log(finalCards);
-    this.http
-      .post(this.saveFinalCardsUrl + "/" + roomid, finalCards)
-      .subscribe();
-
-    setTimeout(() => {
-      this.pullFinalShowCards();
-    }, 300);
+  deletePlayer(roomId: string, playerIndex: number): Promise<Rooms> {
+    let req = new DeletePlayerRequest(roomId, playerIndex);
+    console.log(req);
+    let promise = this.http.post<Rooms>(this.deletePlayerUrl, req, { responseType: "json" }).toPromise();
+    return promise;
   }
 
-  pullFinalShowCards(): FinalCardsResponseModel {
-    console.log("came in pull final show cards");
-    const roomId = this.router.url.split("/")[2];
-    const roomById = new RoomById(roomId);
-    let finalCardsResponse: FinalCardsResponseModel = null;
-    let playersAttr : PlayersAttr[] = [];
+  saveFinalShow() {
+    let finalCards = this.finalCardsResponse;
+    console.log("came in the save final show");
+    console.log(finalCards);
+    const roomid = this.router.url.split("/")[2];
     this.http
-      .post<FinalCardsResponseModel>(this.pullFinalCardsUrl, roomById)
-      .subscribe((data) => {
-        console.log(data);
-        data.playersAttrsList.forEach(each => {
-          playersAttr.push(new PlayersAttr(each.cards, each.folded, each.name));
-        });
-        
-        finalCardsResponse = new FinalCardsResponseModel(
-          data.roomId,
-          playersAttr
-        );
-       this.setFinalCards(finalCardsResponse);
+      .post(this.saveFinalCardsUrl + "/" + roomid, finalCards)
+      .subscribe({
+        next: () => {
+          console.log("received response")
+        },
+        error: err => {
+          console.log("error occurred")
+        },
+        complete: () => {
+          console.log("subscription completed")
+        },
       });
-      console.log(finalCardsResponse);
-    return finalCardsResponse;
+    // setTimeout(() => {
+    //   this.pullFinalShowCards();
+    // }, 300);
+  }
+
+
+  setFinalShowCards(finalCardsResponse: FinalCardsModel[]) {
+    this.finalCardsResponse = (finalCardsResponse);
+  }
+
+  getFinalShowCards(): FinalCardsModel[] {
+    return this.finalCardsResponse;
   }
 
   setUpdatedCards(roomId: string) {

@@ -1,6 +1,11 @@
 #container {
     display: block;
   }
+
+.edit_button {
+    float: right;
+    margin: 0 10px 10px 0; /* for demo only */
+}
   
   .player {
     top: 40px;
@@ -52,17 +57,6 @@
     width: 80px;
     border-radius: 10px;
   }
-
-
-
-  
-  .rotateimg90 {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
   
   .example-list {
     max-width: 100%;
@@ -83,6 +77,7 @@
     border-radius: 1px;
     overflow: visible;
   }
+  
   .example-box {
     color: rgba(0, 0, 0, 0);
     display: flex;

@@ -1,7 +1,7 @@
 .white-pane {
   top: 78px;
   left: 38px;
-  width: 359px;
+  width: 360px;
   height: 126px;
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 2px solid #ffffff;
@@ -48,14 +48,5 @@
   max-width: 747px !important;
 }
 
-.center {
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  position: absolute;
-  margin: auto;
-  width: 50%;
-  padding: 10px;
-}
 
 

@@ -5,6 +5,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Observable } from 'rxjs';
 import { Player } from '../models/player.model';
 import { FinalCardsResponseModel } from '../models/final-cards-resp.model';
+import { PlayersAttr } from '../models/final-players-attr';
+import { Router, RouterLink } from '@angular/router';
+import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-view-final-cards',
@@ -13,33 +16,36 @@ import { FinalCardsResponseModel } from '../models/final-cards-resp.model';
 })
 export class ViewFinalCardsComponent implements OnInit {
 
+  finalCardsResponseObs: Observable<FinalCardsResponseModel>;
   finalCardsResponse: FinalCardsResponseModel;
   users = [];
-  cards = [];
+  cards;
+  playersAttr: FinalCardsResponseModel = null;
   playersObj: Observable<Player[]>;
 
-  constructor(private commonService: CommonService) { }
+  constructor(private commonService: CommonService, private router: Router) { }
 
   ngOnInit() {
-    this.finalCardsResponse = this.commonService.getFinalCards();
+    setTimeout(() => {
+      this.playersAttr = this.commonService.pullFinalShowCards();
+      console.log(this.playersAttr);
+    }, 300);
   }
 
   drop(event: CdkDragDrop<string[]>, cards: string[]) {
     this.cards = cards;
-    if (event.previousContainer === event.container) {
-      moveItemInArray(cards, event.previousIndex, event.currentIndex);
-    } else {
-      if (cards.length == 14) {
-        transferArrayItem(
-          event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex
-        );
-      } else {
-        console.log("u can have only 14 cards in hand");
-      }
-    }
+    moveItemInArray(cards, event.previousIndex, event.currentIndex);
   }
 
+  onRefresh() {
+    this.playersAttr = this.commonService.getFinalCards();
+  }
+
+  onStartNewGame() {
+    
+  }
+
+  onManagePlayers() {
+    let ary = this.router.url.split('/');
+  }
 }

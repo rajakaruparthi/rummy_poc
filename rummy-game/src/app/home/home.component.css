@@ -1,9 +1,11 @@
 .guest {
   top: 229px;
   left: 85px;
-  width: 268px;
+  padding: 5px;
+  min-width: 360px;
+  max-width: 500px;
   height: 132px;
-  background: rgb(154, 201, 228) 0% 0% no-repeat padding-box;
+  background: white no-repeat padding-box;
   border-radius: 11px;
   opacity: 1;
   margin: auto;

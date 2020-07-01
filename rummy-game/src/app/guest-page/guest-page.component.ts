@@ -17,21 +17,8 @@ export class GuestPageComponent implements OnInit {
     // console.log(users);
   }
 
-  onClickViewRooms(userName: string) {
-    this.commonService.setPlayerName(userName);
-  }
-
-  drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
-  }
-
-  allowDrop(ev) {
-    ev.preventDefault();
-  }
-
-  drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+  onClickViewRooms(firstName: string, lastName: string) {
+    let username = firstName+", "+lastName;
+    this.commonService.setPlayerName(username);
   }
 }
