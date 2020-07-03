@@ -64,9 +64,9 @@ export class CardSectionComponent implements OnInit {
     .fromEvent<boolean>("declaredFlag")
     .subscribe((data) => (this.declaredFlag = data));
 
-  // gameStartedFlagEmitter = this.socket
-  //   .fromEvent<boolean>("gameStarted")
-  //   .subscribe((data) => (this.isGameStarted = data));
+  gameStartedFlagEmitter = this.socket
+    .fromEvent<boolean>("gameStarted")
+    .subscribe((data) => (this.isGameStarted = data));
 
   starting = this.socket.fromEvent<string>("startGame");
 
@@ -88,12 +88,9 @@ export class CardSectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.player = this.commonService.getPlayerName();
-    if (
-      this.commonService.gameCreator !== undefined &&
-      this.commonService.gameCreator.name === this.commonService.getPlayerName()
-    ) {
+    if (this.commonService.gameCreator !== undefined &&
+      this.commonService.gameCreator.name === this.commonService.getPlayerName()) {
       this.startFlag = true;
     }
     this.playersObs = this.commonService.users;
@@ -124,7 +121,7 @@ export class CardSectionComponent implements OnInit {
   dropOpenCard(event: CdkDragDrop<string[]>) {
     if (this.cards !== undefined && this.cards.length == 14) {
       this.socket.emit("changePlayer", this.currentPlayerIndex);
-      if (this.openCard.length === 1) {
+      if (this.openCard.length === 1 && !(event.previousContainer.id === event.container.id)) {
         this.openCard.shift();
       }
       transferArrayItem(
@@ -135,13 +132,8 @@ export class CardSectionComponent implements OnInit {
       );
       this.socket.emit("updateOpenCard", this.openCard);
     } else if (this.cards !== undefined && this.cards.length == 13) {
-      console.log(event);
-      console.log("came in -- " + event.container.data[0])
       this.cards.push(event.container.data[0]);
       this.openCard.pop();
-
-      console.log(this.currentPlayerIndex + "--- " + "came in else if");
-      console.log(this.cards);
     } else {
       alert("Size should be 13");
     }
@@ -149,7 +141,6 @@ export class CardSectionComponent implements OnInit {
     const playerCards = [];
     playerCards[0] = this.currentPlayerIndex;
     playerCards[1] = this.cards;
-    console.log(playerCards);
     this.socket.emit("updatePlayersCards", playerCards);
   }
 
@@ -176,10 +167,6 @@ export class CardSectionComponent implements OnInit {
     this.openConfirmationToDeclare(playerIndex);
   }
 
-  viewFinalCards() {
-    // this.router.navigate(["view"]);
-  }
-
   openConfirmationToDeclare(playerIndex: number) {
     this.dialogService
       .confirm("Please confirm", "Do you really want to declare .. ?")
@@ -192,7 +179,7 @@ export class CardSectionComponent implements OnInit {
           this.winnerIndex = data;
         });
       })
-      .then((conf )=> {
+      .then((conf) => {
         this.finalShowCardsEmitter.subscribe((data) => {
           this.finalShowCards = data;
           this.commonService.setFinalShowCards(this.finalShowCards);

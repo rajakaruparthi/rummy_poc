@@ -34,6 +34,7 @@
     <button (click)="onRefresh()" style="margin-top: 10px" class="btn btn-danger">Reload</button>
   </div>
   <div class="col-auto">
-    <button class="btn btn-success" (click)="onStartNewGame()" style="margin-top: 10px; float: right;">Continue</button>
+    <!-- <button class="btn btn-success" (click)="onContinuePlaying()" style="margin-top: 10px; float: right;">Continue Playing ... </button> -->
+    <a (click)="onContinuePlaying()" routerLink="../">Continue Playing ... </a>
   </div>
 </div>

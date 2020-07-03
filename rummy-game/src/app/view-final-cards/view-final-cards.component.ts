@@ -8,6 +8,7 @@ import { FinalCardsResponseModel } from '../models/final-cards-resp.model';
 import { PlayersAttr } from '../models/final-players-attr';
 import { Router, RouterLink } from '@angular/router';
 import { Route } from '@angular/compiler/src/core';
+import { Socket } from "ngx-socket-io";
 
 @Component({
   selector: 'app-view-final-cards',
@@ -23,13 +24,14 @@ export class ViewFinalCardsComponent implements OnInit {
   playersAttr: FinalCardsResponseModel = null;
   playersObj: Observable<Player[]>;
 
-  constructor(private commonService: CommonService, private router: Router) { }
+  constructor(private commonService: CommonService, private router: Router, private socket: Socket) { }
 
   ngOnInit() {
     setTimeout(() => {
       this.playersAttr = this.commonService.pullFinalShowCards();
       console.log(this.playersAttr);
     }, 300);
+    console.log("current player -- "+ this.commonService.playerName);
   }
 
   drop(event: CdkDragDrop<string[]>, cards: string[]) {
@@ -41,8 +43,8 @@ export class ViewFinalCardsComponent implements OnInit {
     this.playersAttr = this.commonService.getFinalCards();
   }
 
-  onStartNewGame() {
-    
+  onContinuePlaying() {
+    this.socket.emit("continuePlaying", "");
   }
 
   onManagePlayers() {

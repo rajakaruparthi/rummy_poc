@@ -1,4 +1,4 @@
-<span style="color: white">logged in as {{currentPlayer}}</span>
+<span style="color: white">logged in as {{player}}</span>
 <div class="row" *ngIf="!isGameStarted">
   <button class="btn btn-danger" style="margin-left: 20px" (click)="distribute(); isGameStarted = true" [disabled]="isGameStarted">
     Distribute
@@ -6,7 +6,7 @@
     <span *ngIf="player != undefined" class="playerNameCss" style="float: right;">{{ player.substring(0, 1).toUpperCase() }}
     </span>
 </div>
-
+<span style="color: white">{{isGameStarted}}</span>
 <app-players-list *ngIf="!isGameStarted"></app-players-list>
 
 <div id="container" *ngIf="isGameStarted">
@@ -19,7 +19,7 @@
                     selected: i == currentPlayerIndex,
                     folded: usr.folded
                   }" style="text-align: center;">
-              {{ usr.name.split(',')[0] }}
+                {{usr.name.split(',')[0] }}
             </td>
           </tr>
         </table>
@@ -51,7 +51,7 @@
         <div class="col-xs-3 col-3">
           <div [ngClass]="{ disableDiv: currentPlayer != player }" id="openCardDiv" class="openCardDiv" cdkDropList #openCardList="cdkDropList"
             [cdkDropListData]="openCard" [cdkDropListConnectedTo]="[cardList]" (cdkDropListDropped)="dropOpenCard($event)">
-            <img cdkDrag style="width: 107%; border-radius: 10px;" src="../../assets/cards/{{ openCard[0] }}.jpg" />
+            <img cdkDrag id="openCardImage" style="width: 107%; border-radius: 10px;" src="../../assets/cards/{{ openCard[0] }}.jpg" />
           </div>
         </div>
         <div class="col-xs-3 col-3">
