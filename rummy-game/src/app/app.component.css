@@ -5,5 +5,7 @@
     max-height: 812px;
     min-height: 375px;
     background: #1C2331 0% 0% no-repeat padding-box;
-    opacity: 1;
+    opacity: 1;    
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
