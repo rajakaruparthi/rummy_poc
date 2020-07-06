@@ -20,8 +20,8 @@
   }
   
   .folded {
-    background: #ffbfbf  !important;
-    color: black !important;
+    background: #dc3545  !important;
+    color: white !important;
   }
   
   .currentUser {

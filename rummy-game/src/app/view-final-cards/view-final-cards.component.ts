@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { Player } from '../models/player.model';
 import { FinalCardsResponseModel } from '../models/final-cards-resp.model';
 import { PlayersAttr } from '../models/final-players-attr';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { Route } from '@angular/compiler/src/core';
 import { Socket } from "ngx-socket-io";
 
@@ -21,16 +21,28 @@ export class ViewFinalCardsComponent implements OnInit {
   finalCardsResponse: FinalCardsResponseModel;
   users = [];
   cards;
+  currentPlayerIndex;
+  startIndex ;
   playersAttr: FinalCardsResponseModel = null;
   playersObj: Observable<Player[]>;
 
-  constructor(private commonService: CommonService, private router: Router, private socket: Socket) { }
+  
+  startIndexEmitter = this.socket
+  .fromEvent<number>("startIndex")
+  .subscribe((data) => (this.startIndex = data));
+
+  currentPlayerIndexEmitter = this.socket
+  .fromEvent<number>("currentIndex")
+  .subscribe((data) => (this.currentPlayerIndex = data));
+
+  constructor(private commonService: CommonService, private router: Router, private socket: Socket, private route: ActivatedRoute) { }
 
   ngOnInit() {
     setTimeout(() => {
       this.playersAttr = this.commonService.pullFinalShowCards();
       console.log(this.playersAttr);
     }, 300);
+    console.log("startIndex"+ this.startIndex);
     console.log("current player -- "+ this.commonService.playerName);
   }
 
@@ -44,7 +56,10 @@ export class ViewFinalCardsComponent implements OnInit {
   }
 
   onContinuePlaying() {
-    this.socket.emit("continuePlaying", "");
+    console.log("came in");
+    this.socket.emit("continuePlaying", "continue");
+    this.commonService.setFinalCards(null);
+    this.router.navigate(['../'], { relativeTo: this.route});
   }
 
   onManagePlayers() {

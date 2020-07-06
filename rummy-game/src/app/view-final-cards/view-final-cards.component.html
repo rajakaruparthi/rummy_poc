@@ -1,4 +1,6 @@
 <div class="row">
+  <span style="color: antiquewhite">{{currentPlayerIndex}}</span>
+  
   <div class="col-auto mr-auto">
     <button class="btn btn-secondary" (click)="onStartNewGame()" style="float: left">
       New Game
@@ -34,7 +36,6 @@
     <button (click)="onRefresh()" style="margin-top: 10px" class="btn btn-danger">Reload</button>
   </div>
   <div class="col-auto">
-    <!-- <button class="btn btn-success" (click)="onContinuePlaying()" style="margin-top: 10px; float: right;">Continue Playing ... </button> -->
-    <a (click)="onContinuePlaying()" routerLink="../">Continue Playing ... </a>
+    <button (click)="onContinuePlaying()" style="margin-top: 10px" class="btn btn-primary">Continue to next hand ... </button>
   </div>
 </div>

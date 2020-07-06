@@ -2,12 +2,20 @@
   display: block;
 }
 
+#target{
+  width: 30px;
+  height: 30px;
+  background-color: #aaa;
+  border-radius: 50%;
+  float: right;
+  text-align: center;
+}
+
 .nameTd {
   width: 98px;
   padding: 0 15px 0 15px;
   border-spacing: 10px;
 }
-
 
 .player {
   top: 40px;
@@ -32,8 +40,8 @@
 }
 
 .folded {
-  background: #ffbfbf  !important;
-  color: black !important;
+  background: #dc3545  !important;
+  color: white !important;
 }
 
 .winner {

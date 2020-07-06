@@ -35,7 +35,7 @@ export class PlayersRoomListComponent implements OnInit {
 
   assignCards() {
     const roomId: string = this.router.url.split('/')[2];
-    this.commonService.setUpdatedCards(roomId);
+    // this.commonService.setUpdatedCards(roomId);
     this.onStart();
   }
 

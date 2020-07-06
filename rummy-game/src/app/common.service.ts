@@ -47,6 +47,7 @@ export class CommonService implements OnInit {
   updatedCardResponse: ShuffleCardsResponse;
   finalCardsResponsebyRoomid;
   finalCardsResponse;
+  distributeIndex;
 
   constructor(
     private http: HttpClient,
@@ -157,7 +158,7 @@ export class CommonService implements OnInit {
           console.log("received response")
         },
         error: err => {
-          console.log("error occurred")
+          console.log("error occurred");
         },
         complete: () => {
           console.log("subscription completed")
@@ -177,8 +178,8 @@ export class CommonService implements OnInit {
     return this.finalCardsResponse;
   }
 
-  setUpdatedCards(roomId: string) {
-    const shuffleCardsReq = { roomId: roomId };
+  setUpdatedCards(roomId: string, distributeIndex: number) {
+    const shuffleCardsReq = { roomId: roomId, distributeIndex: distributeIndex};
     let response: ShuffleCardsResponse = null;
     this.http
       .post<ShuffleCardsResponse>(this.shuffleCardsUrl, shuffleCardsReq)
@@ -191,7 +192,6 @@ export class CommonService implements OnInit {
         );
         this.updatedCardResponse = response;
       });
-    console.log(this.updatedCardResponse);
     return response;
   }
 
@@ -269,5 +269,13 @@ export class CommonService implements OnInit {
 
   pushCardToTheCard(card: string) {
     this.cards.push(card);
+  }
+
+  setDistributeIndex(index) {
+    this.distributeIndex = index;
+  }
+
+  getDistributeIndex() {
+    return this.distributeIndex;
   }
 }

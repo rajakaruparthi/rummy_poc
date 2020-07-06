@@ -40,7 +40,7 @@ export class PlayersListComponent implements OnInit {
     let roomId = this.router.url.split('/')[2];
     console.log(roomId);
     this.dialogService
-      .confirm("Please confirm", "Do you really want to declare .. ?")
+      .confirm("Please confirm", "Do you really want to remove .. ?")
       .then((confirmed) => {
         console.log("came in " + playerIndex);
         this.users.splice(playerIndex, 1);
@@ -52,7 +52,7 @@ export class PlayersListComponent implements OnInit {
         });
       })
       .catch(() => {
-        console.log("continue playing");
+        console.log("player is still playing");
       });
   }
 

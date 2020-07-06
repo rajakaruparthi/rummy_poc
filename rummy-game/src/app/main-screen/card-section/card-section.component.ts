@@ -13,6 +13,7 @@ import { Player } from "src/app/models/player.model";
 import { PlayerCardsModel } from "src/app/models/player-cards.model";
 import { ConfirmDialogService } from "src/app/confirm-dialog.service";
 import { FinalCardsModel } from "src/app/models/final-cards.model";
+import { PlayerIndex } from "@angular/core/src/render3/interfaces/player";
 
 @Component({
   selector: "app-card-section",
@@ -20,6 +21,7 @@ import { FinalCardsModel } from "src/app/models/final-cards.model";
   styleUrls: ["./card-section.component.css"],
 })
 export class CardSectionComponent implements OnInit {
+
   shuffleCardsResponse: ShuffleCardsResponse = null;
   foldDisplayFlag = false;
   isGameStarted = false;
@@ -31,12 +33,16 @@ export class CardSectionComponent implements OnInit {
   deck = [];
   distributeFlag: boolean = false;
   cards = [];
+  players: Player[] = [];
   isDisabled = false;
   declaredFlag = false;
-  currentPlayerIndex = 0;
+  currentPlayerIndex;
+  distributeIndex;
   currentPlayer = "";
   winnerIndex: number = null;
   finalShowCards = [];
+  winnerPlayerName;
+  playerIndex;
 
   playerCardsEmiter = this.socket.fromEvent<PlayerCardsModel[]>("cards");
 
@@ -62,15 +68,27 @@ export class CardSectionComponent implements OnInit {
 
   declaredFlagEmitter = this.socket
     .fromEvent<boolean>("declaredFlag")
-    .subscribe((data) => (this.declaredFlag = data));
+    .subscribe((data) => { this.declaredFlag = data; });
 
   gameStartedFlagEmitter = this.socket
     .fromEvent<boolean>("gameStarted")
-    .subscribe((data) => (this.isGameStarted = data));
+    .subscribe((data) => { this.isGameStarted = data; });
+
+  cardsEmitter = this.socket
+    .fromEvent<Player[]>("users")
+    .subscribe((data) => { this.players = data; });
+
+  distributeIndexEmitter = this.socket
+    .fromEvent<number>("distributeIndex");
 
   starting = this.socket.fromEvent<string>("startGame");
 
-  winnerIndexEmitter = this.socket.fromEvent<number>("winnerIndex");
+  winnerIndexEmitter = this.socket.fromEvent<number>("winnerIndex").subscribe(
+    data => { this.winnerIndex = data; });
+
+  winnerPlayerNameEmitter = this.socket
+    .fromEvent<string>("winnerPlayer")
+    .subscribe((data) => { this.winnerPlayerName = data; });
 
   finalShowCardsEmitter = this.socket.fromEvent<FinalCardsModel[]>("finalShowCards");
 
@@ -89,13 +107,26 @@ export class CardSectionComponent implements OnInit {
 
   ngOnInit() {
     this.player = this.commonService.getPlayerName();
+    
     if (this.commonService.gameCreator !== undefined &&
       this.commonService.gameCreator.name === this.commonService.getPlayerName()) {
       this.startFlag = true;
     }
+
+    this.distributeIndexEmitter.subscribe((data) => {
+      this.distributeIndex = data;
+      console.log("distribute index -- "+data); 
+    });
+
     this.playersObs = this.commonService.users;
     this.playersObs.subscribe((data) => {
       this.playersArray = data;
+      for (let index = 0; index < data.length; index++) {
+        const player = data[index];
+        if (player.name === this.player) {
+          this.playerIndex = index;
+        }
+      }
       console.log(data);
     });
   }
@@ -120,9 +151,12 @@ export class CardSectionComponent implements OnInit {
 
   dropOpenCard(event: CdkDragDrop<string[]>) {
     if (this.cards !== undefined && this.cards.length == 14) {
-      this.socket.emit("changePlayer", this.currentPlayerIndex);
-      if (this.openCard.length === 1 && !(event.previousContainer.id === event.container.id)) {
+      if (this.openCard.length === 1 &&
+        !(event.previousContainer.id === event.container.id)) {
         this.openCard.shift();
+      }
+      if (!(event.previousContainer.id === event.container.id)) {
+        this.socket.emit("changePlayer", this.currentPlayerIndex);
       }
       transferArrayItem(
         event.previousContainer.data,
@@ -151,6 +185,7 @@ export class CardSectionComponent implements OnInit {
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
+
         event.currentIndex
       );
       this.isDisabled = false;
@@ -168,16 +203,14 @@ export class CardSectionComponent implements OnInit {
   }
 
   openConfirmationToDeclare(playerIndex: number) {
+    this.socket.emit("winnerIndexEmit", playerIndex);
+
     this.dialogService
       .confirm("Please confirm", "Do you really want to declare .. ?")
       .then((confirmed) => {
         this.winnerIndex = playerIndex;
         this.declaredFlag = true;
-        this.socket.emit("showCards", true);
-        this.socket.emit("winnerIndex", playerIndex);
-        this.winnerIndexEmitter.subscribe((data) => {
-          this.winnerIndex = data;
-        });
+        this.socket.emit("showCards", playerIndex);
       })
       .then((conf) => {
         this.finalShowCardsEmitter.subscribe((data) => {
@@ -211,13 +244,19 @@ export class CardSectionComponent implements OnInit {
   distribute() {
     this.isGameStarted = true;
     const roomId: string = this.router.url.split("/")[2];
-    this.commonService.setUpdatedCards(roomId);
+    this.commonService.setUpdatedCards(roomId, this.distributeIndex);
     setTimeout(() => {
       this.playerName = this.commonService.playerName;
       this.shuffleCardsResponse = this.commonService.getCardsResponse();
       this.socket.emit("startGame", this.shuffleCardsResponse.playersCards);
+      console.log(this.shuffleCardsResponse.playersCards);
       let response: ShuffleCardsResponse = this.commonService.getCardsResponse();
       this.currentPlayer = response.playersCards[0].name;
+      this.playersObs = this.commonService.users;
+
+      this.playersObs.subscribe(data => {
+        console.log(data);
+      });
       this.socket.emit("updateOpenCard", response.openCard);
       this.socket.emit("updateDeck", response.deck);
       this.socket.emit("joker", response.openJoker);

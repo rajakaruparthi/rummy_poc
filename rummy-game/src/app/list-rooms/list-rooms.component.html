@@ -1,5 +1,7 @@
 <div class="center" style="margin: auto;">
-  <span style="color: white">logged in as {{playerName}}</span>
+    <div *ngIf="player !== undefined" id="target">
+        <b style="text-align: center">{{ player.substring(0,1).toUpperCase() }}</b>
+    </div>
   <div class="white-pane">
     <h5>List of Rooms: </h5>
     <table class="table">

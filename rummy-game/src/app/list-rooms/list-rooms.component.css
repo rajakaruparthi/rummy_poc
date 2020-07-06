@@ -12,6 +12,15 @@
     margin: auto;
     margin-top: 50px;
   }
+
+  #target{
+    width: 30px;
+    height: 30px;
+    background-color: #aaa;
+    border-radius: 50%;
+    float: right;
+    text-align: center;
+  }
   
   .buttoncss-join {
     top: 156px;
