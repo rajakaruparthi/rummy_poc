@@ -84,7 +84,7 @@ export class CommonService implements OnInit {
     this.http
       .post<FinalCardsResponseModel>(this.pullFinalCardsUrl, roomById)
       .subscribe((data) => {
-        console.log(data);
+        // console.log(data);
         data.playersAttrsList.forEach(each => {
           playersAttr.push(new PlayersAttr(each.cards, each.folded, each.name));
         });
@@ -96,9 +96,9 @@ export class CommonService implements OnInit {
         );
 
         this.socket.emit("updateFinalCardsResponse", finalCardsResponse);
-        console.log("response of subscription .... ")
+        // console.log("response of subscription .... ")
         this.showCards.subscribe(data => {
-          console.log(data);
+          // console.log(data);
           this.setFinalCards(data);
         })
       });
@@ -112,7 +112,7 @@ export class CommonService implements OnInit {
       this.socket.emit("addUser", obj);
       const playerName = this.getPlayerName();
       const addPlayerReq = new AddPlayerRequest(roomId, playerName);
-      console.log(addPlayerReq);
+      // console.log(addPlayerReq);
       this.http
         .post<Rooms>(this.addPlayerToRoomUrl, addPlayerReq)
         .subscribe((data) => {
@@ -123,8 +123,8 @@ export class CommonService implements OnInit {
 
   createRoom(roomName: string, password: string) {
     const room = new Rooms(null, roomName, password, null);
-    console.log(room);
-    console.log(this.playersList);
+    // console.log(room);
+    // console.log(this.playersList);
     return this.http
       .post(this.createRoomUrl, room, { responseType: "json" })
       .toPromise();
@@ -148,8 +148,8 @@ export class CommonService implements OnInit {
 
   saveFinalShow() {
     let finalCards = this.finalCardsResponse;
-    console.log("came in the save final show");
-    console.log(finalCards);
+    // console.log("came in the save final show");
+    // console.log(finalCards);
     const roomid = this.router.url.split("/")[2];
     this.http
       .post(this.saveFinalCardsUrl + "/" + roomid, finalCards)
@@ -196,7 +196,7 @@ export class CommonService implements OnInit {
   }
 
   getCardsResponse(): ShuffleCardsResponse {
-    console.log(this.updatedCardResponse);
+    // console.log(this.updatedCardResponse);
     return this.updatedCardResponse;
   }
 
@@ -245,7 +245,7 @@ export class CommonService implements OnInit {
   }
 
   setRooms(rooms: Rooms[]) {
-    console.log(rooms);
+    // console.log(rooms);
     this.roomsList = rooms;
     this.roomsChanged.next(this.roomsList.slice());
   }

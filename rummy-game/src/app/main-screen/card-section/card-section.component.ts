@@ -106,8 +106,15 @@ export class CardSectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    window.addEventListener('beforeunload', function (e) {
+      const confirmationMessage = '\o/';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    });
+
     this.player = this.commonService.getPlayerName();
-    
+
     if (this.commonService.gameCreator !== undefined &&
       this.commonService.gameCreator.name === this.commonService.getPlayerName()) {
       this.startFlag = true;
@@ -115,19 +122,19 @@ export class CardSectionComponent implements OnInit {
 
     this.distributeIndexEmitter.subscribe((data) => {
       this.distributeIndex = data;
-      console.log("distribute index -- "+data); 
     });
 
     this.playersObs = this.commonService.users;
+    
     this.playersObs.subscribe((data) => {
       this.playersArray = data;
+
       for (let index = 0; index < data.length; index++) {
         const player = data[index];
         if (player.name === this.player) {
           this.playerIndex = index;
         }
       }
-      console.log(data);
     });
   }
 
@@ -185,7 +192,6 @@ export class CardSectionComponent implements OnInit {
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-
         event.currentIndex
       );
       this.isDisabled = false;
@@ -249,14 +255,10 @@ export class CardSectionComponent implements OnInit {
       this.playerName = this.commonService.playerName;
       this.shuffleCardsResponse = this.commonService.getCardsResponse();
       this.socket.emit("startGame", this.shuffleCardsResponse.playersCards);
-      console.log(this.shuffleCardsResponse.playersCards);
+      // console.log(this.shuffleCardsResponse.playersCards);
       let response: ShuffleCardsResponse = this.commonService.getCardsResponse();
       this.currentPlayer = response.playersCards[0].name;
       this.playersObs = this.commonService.users;
-
-      this.playersObs.subscribe(data => {
-        console.log(data);
-      });
       this.socket.emit("updateOpenCard", response.openCard);
       this.socket.emit("updateDeck", response.deck);
       this.socket.emit("joker", response.openJoker);
@@ -267,6 +269,6 @@ export class CardSectionComponent implements OnInit {
 
   changePlayerActive() {
     this.commonService.users.subscribe((data) => (this.playersArray = data));
-    console.log(this.playersArray);
+    // console.log(this.playersArray);
   }
 }

@@ -38,9 +38,15 @@ export class ViewFinalCardsComponent implements OnInit {
   constructor(private commonService: CommonService, private router: Router, private socket: Socket, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    window.addEventListener('beforeunload', function (e) {
+      const confirmationMessage = '\o/';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    });
+
     setTimeout(() => {
       this.playersAttr = this.commonService.pullFinalShowCards();
-      console.log(this.playersAttr);
+      // console.log(this.playersAttr);
     }, 300);
     console.log("startIndex"+ this.startIndex);
     console.log("current player -- "+ this.commonService.playerName);
@@ -56,7 +62,7 @@ export class ViewFinalCardsComponent implements OnInit {
   }
 
   onContinuePlaying() {
-    console.log("came in");
+    // console.log("came in");
     this.socket.emit("continuePlaying", "continue");
     this.commonService.setFinalCards(null);
     this.router.navigate(['../'], { relativeTo: this.route});

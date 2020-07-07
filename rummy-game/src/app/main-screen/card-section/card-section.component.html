@@ -4,7 +4,7 @@
 </div>
 <!-- </div> -->
 <div class="row" *ngIf="!isGameStarted">
-  <span style="color: antiquewhite">{{playerIndex}}, {{distributeIndex}}</span>
+  <!-- <span style="color: antiquewhite">{{playerIndex}}, {{distributeIndex}}</span> -->
 
   <button class="btn btn-danger" style="margin-left: 20px" *ngIf="playerIndex === distributeIndex" (click)="distribute(); isGameStarted = true" [disabled]="isGameStarted">
     Distribute
@@ -33,10 +33,8 @@
     </div>
 
     <div *ngIf="declaredFlag">
-      <h5 style="color: darkgrey;">{{ winnerPlayerName }} declared the show</h5>
-      <h5>
-        View the final cards:
-        <button class="btn btn-secondary" routerLink="view" (click)="viewFinalCards()">
+      <h5 style="color: darkgrey;">{{ winnerPlayerName }} declared the show 
+        <button class="btn btn-primary" routerLink="view" (click)="viewFinalCards()">
           View
         </button>
       </h5>
