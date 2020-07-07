@@ -141,7 +141,6 @@ export class CommonService implements OnInit {
 
   deletePlayer(roomId: string, playerIndex: number): Promise<Rooms> {
     let req = new DeletePlayerRequest(roomId, playerIndex);
-    console.log(req);
     let promise = this.http.post<Rooms>(this.deletePlayerUrl, req, { responseType: "json" }).toPromise();
     return promise;
   }

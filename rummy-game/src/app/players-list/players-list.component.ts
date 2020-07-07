@@ -44,9 +44,9 @@ export class PlayersListComponent implements OnInit {
       .then((confirmed) => {
         console.log("came in " + playerIndex);
         this.users.splice(playerIndex, 1);
+        this.socket.emit("deletePlayerIndex", playerIndex);
         let promise = this.commonService.deletePlayer(roomId, playerIndex);
         promise.then(data => {
-          console.log(data);
         }).then(x =>{
           this.socket.emit("deletePlayer", roomId);
         });
