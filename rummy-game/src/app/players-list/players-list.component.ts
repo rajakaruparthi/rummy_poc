@@ -57,6 +57,9 @@ export class PlayersListComponent implements OnInit {
   }
 
   onRefresh(){
+    let roomId = this.router.url.split('/')[2];
+    // this.usersObservable = this.commonService.users;
+    this.socket.emit("refreshUsers", roomId);
     this.usersObservable = this.commonService.users;
   }
 }
