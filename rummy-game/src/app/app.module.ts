@@ -17,7 +17,7 @@ import { ListRoomsComponent } from './list-rooms/list-rooms.component';
 import { FormsModule } from '@angular/forms';
 import { LeftpaneComponent } from './leftpane/leftpane.component';
 import { PlayersRoomListComponent } from './players-room-list/players-room-list.component';
-
+import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { DialogBoxComponent } from './dialog-box/dialog-box.component';
@@ -57,10 +57,13 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     DemoMaterialModule,
     FormsModule,
     NgbModule.forRoot(),
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    BackButtonDisableModule.forRoot({
+      preserveScrollPosition: true
+    })
   ],
-  providers: [ ConfirmDialogService],
+  providers: [ConfirmDialogService],
   bootstrap: [AppComponent],
-  entryComponents: [ DialogBoxComponent ],
+  entryComponents: [DialogBoxComponent],
 })
 export class AppModule { }

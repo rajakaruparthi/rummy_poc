@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { CommonService } from "src/app/common.service";
 import {
   CdkDragDrop,
@@ -14,6 +14,7 @@ import { PlayerCardsModel } from "src/app/models/player-cards.model";
 import { ConfirmDialogService } from "src/app/confirm-dialog.service";
 import { FinalCardsModel } from "src/app/models/final-cards.model";
 import { PlayerIndex } from "@angular/core/src/render3/interfaces/player";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
   selector: "app-card-section",
@@ -92,6 +93,9 @@ export class CardSectionComponent implements OnInit {
 
   finalShowCardsEmitter = this.socket.fromEvent<FinalCardsModel[]>("finalShowCards");
 
+  @HostListener('window:popstate', ['$event']) onPopState(event) {
+    console.log('Back button pressed');
+  };
   player: string;
 
   playersObs: Observable<Player[]>;
@@ -101,18 +105,29 @@ export class CardSectionComponent implements OnInit {
   constructor(
     private commonService: CommonService,
     private router: Router,
-    private socket: Socket,
+    private socket: Socket, 
+    location: PlatformLocation, 
     private dialogService: ConfirmDialogService
-  ) { }
+  ) {
+   }
+
+  openConfirmationDialogForBack() {
+    this.dialogService
+      .confirm("Please confirm..", "Do you really want to fold ... ?")
+      .then((confirmed) => {
+        if (confirmed) {
+          
+        }
+      })
+      .catch(() => console.log("Continue"));
+  }
 
   ngOnInit() {
-
     window.addEventListener('beforeunload', function (e) {
       const confirmationMessage = '\o/';
       e.returnValue = confirmationMessage;
       return confirmationMessage;
     });
-
     this.player = this.commonService.getPlayerName();
 
     if (this.commonService.gameCreator !== undefined &&
@@ -120,12 +135,13 @@ export class CardSectionComponent implements OnInit {
       this.startFlag = true;
     }
 
+   
     this.distributeIndexEmitter.subscribe((data) => {
       this.distributeIndex = data;
     });
 
     this.playersObs = this.commonService.users;
-    
+
     this.playersObs.subscribe((data) => {
       this.playersArray = data;
 
@@ -196,7 +212,12 @@ export class CardSectionComponent implements OnInit {
       );
       this.isDisabled = false;
       this.deck.shift();
-      this.socket.emit("updateDeck", this.deck);
+      this.socket.emit("updateDeck", this.deck); 
+      
+      const playerCards = [];
+      playerCards[0] = this.currentPlayerIndex;
+      playerCards[1] = this.cards;
+      this.socket.emit("updatePlayersCards", playerCards);
     }
   }
 
