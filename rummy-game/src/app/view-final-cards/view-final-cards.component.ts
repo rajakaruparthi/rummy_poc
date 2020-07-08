@@ -38,6 +38,7 @@ export class ViewFinalCardsComponent implements OnInit {
   constructor(private commonService: CommonService, private router: Router, private socket: Socket, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    
     window.addEventListener('beforeunload', function (e) {
       const confirmationMessage = '\o/';
       e.returnValue = confirmationMessage;

@@ -31,6 +31,11 @@ export class PlayersListComponent implements OnInit {
     private socket: Socket, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    window.addEventListener('beforeunload', function (e) {
+      const confirmationMessage = '\o/';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    });
     let roomId = this.router.url.split('/')[2];
     let obj = {"roomId": roomId};
     this.usersObservable = this.commonService.users;

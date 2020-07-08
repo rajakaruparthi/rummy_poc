@@ -27,6 +27,12 @@ export class PlayersRoomListComponent implements OnInit {
   constructor(private commonService: CommonService, private router: Router, private socket: Socket) { }
 
   ngOnInit() {
+    window.addEventListener('beforeunload', function (e) {
+      const confirmationMessage = '\o/';
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    });
+    
     if(this.commonService.gameCreator !== undefined && this.commonService.gameCreator.name === this.commonService.getPlayerName()) {
         this.startFlag = true;
     }
