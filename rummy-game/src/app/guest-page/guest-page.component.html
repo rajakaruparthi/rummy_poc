@@ -5,22 +5,15 @@
             type="text"
             [(ngModel)]="firstname"
             name="firstname"
-            placeholder="Firstname ..."
-            class="form-control"
-          />
-          <input
-            type="text"
-            [(ngModel)]="lastname"
-            name="lastname"
-            placeholder="Lastname ..."
+            placeholder="name ..."
             class="form-control"
           />
           <div class="input-group-append">
             <button
               type="submit"
-              [disabled]="!lastname || !firstname"
+              [disabled]="!firstname"
               routerLink="table"
-              (click)="onClickViewRooms(firstname, lastname)"
+              (click)="onClickViewRooms(firstname)"
               id="bdg-learn-sub-button-ebook-programming-for-profits"
               class="btn btn-primary mb-2"
             >

@@ -13,12 +13,10 @@ export class GuestPageComponent implements OnInit {
   constructor(private commonService: CommonService) { }
 
   ngOnInit() {
-    // let users = this.commonService.getUsers();
-    // console.log(users);
   }
 
-  onClickViewRooms(firstName: string, lastName: string) {
-    let username = firstName+", "+lastName;
+  onClickViewRooms(firstName: string) {
+    let username = firstName;
     this.commonService.setPlayerName(username);
   }
 }

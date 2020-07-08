@@ -84,7 +84,6 @@ export class CommonService implements OnInit {
     this.http
       .post<FinalCardsResponseModel>(this.pullFinalCardsUrl, roomById)
       .subscribe((data) => {
-        // console.log(data);
         data.playersAttrsList.forEach(each => {
           playersAttr.push(new PlayersAttr(each.cards, each.folded, each.name));
         });
@@ -96,11 +95,10 @@ export class CommonService implements OnInit {
         );
 
         this.socket.emit("updateFinalCardsResponse", finalCardsResponse);
-        // console.log("response of subscription .... ")
         this.showCards.subscribe(data => {
-          // console.log(data);
           this.setFinalCards(data);
         })
+        
       });
     return this.finalCardsResponsebyRoomid;
   }
@@ -122,7 +120,7 @@ export class CommonService implements OnInit {
   }
 
   createRoom(roomName: string, password: string) {
-    const room = new Rooms(null, roomName, password, null);
+    const room = new Rooms(null, roomName, password, null, 0);
     // console.log(room);
     // console.log(this.playersList);
     return this.http
@@ -163,9 +161,6 @@ export class CommonService implements OnInit {
           console.log("subscription completed")
         },
       });
-    // setTimeout(() => {
-    //   this.pullFinalShowCards();
-    // }, 300);
   }
 
 

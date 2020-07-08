@@ -46,10 +46,7 @@ export class ViewFinalCardsComponent implements OnInit {
 
     setTimeout(() => {
       this.playersAttr = this.commonService.pullFinalShowCards();
-      // console.log(this.playersAttr);
     }, 300);
-    console.log("startIndex"+ this.startIndex);
-    console.log("current player -- "+ this.commonService.playerName);
   }
 
   drop(event: CdkDragDrop<string[]>, cards: string[]) {
@@ -62,7 +59,7 @@ export class ViewFinalCardsComponent implements OnInit {
   }
 
   onContinuePlaying() {
-    // console.log("came in");
+    this.socket.emit("readyForNextGame", this.commonService.getPlayerName());
     this.socket.emit("continuePlaying", "continue");
     this.commonService.setFinalCards(null);
     this.router.navigate(['../'], { relativeTo: this.route});

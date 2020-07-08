@@ -1,12 +1,13 @@
 <!-- <div style="width: 20px; height: 20px; color: white"> -->
 <div *ngIf="player !== undefined" id="target">
-    <b style="text-align: center">{{ player.substring(0,1).toUpperCase() }}</b>
+  <b style="text-align: center">{{ player.substring(0,1).toUpperCase() }}</b>
 </div>
 <!-- </div> -->
 <div class="row" *ngIf="!isGameStarted">
   <!-- <span style="color: antiquewhite">{{playerIndex}}, {{distributeIndex}}</span> -->
 
-  <button class="btn btn-danger" style="margin-left: 20px" *ngIf="playerIndex === distributeIndex" (click)="distribute(); isGameStarted = true" [disabled]="isGameStarted">
+  <button class="btn btn-danger" style="margin-left: 20px" *ngIf="playerIndex === distributeIndex" (click)="distribute(); isGameStarted = true"
+    [disabled]="isGameStarted">
     Distribute
   </button>
   <span *ngIf="player != undefined" class="playerNameCss" style="float: right;">{{ player.substring(0, 1).toUpperCase() }}
@@ -25,17 +26,17 @@
                     selected: i == currentPlayerIndex,
                     folded: usr.folded
                   }" style="text-align: center;">
-              {{usr.name.split(',')[0] }}
+              {{ usr.name.split(',')[0] }}
             </td>
           </tr>
         </table>
       </div>
     </div>
 
-    <div *ngIf="declaredFlag">
-      <h5 style="color: darkgrey;">{{ winnerPlayerName }} declared the show 
+    <div *ngIf="declaredFlag" style=" text-align: center">
+      <h5 style="color: #86ff03;">{{ winnerPlayerName }} declared the show
         <button class="btn btn-primary" routerLink="view" (click)="viewFinalCards()">
-          View
+          View Final Cards
         </button>
       </h5>
     </div>

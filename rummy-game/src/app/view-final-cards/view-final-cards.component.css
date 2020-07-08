@@ -8,14 +8,10 @@
 }
   
   .player {
-    top: 40px;
-    left: 50px;
     width: 98px;
-    height: 38px;
     color: white;
     background: #004040 0% 0% no-repeat padding-box;
-    /* border: 1px solid #ffff00; */
-    border-radius: 15px;
+    border-radius: 50px;
     opacity: 1;
   }
   

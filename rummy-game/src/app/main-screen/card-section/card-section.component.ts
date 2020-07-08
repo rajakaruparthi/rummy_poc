@@ -106,23 +106,11 @@ export class CardSectionComponent implements OnInit {
     private commonService: CommonService,
     private router: Router,
     private socket: Socket, 
-    location: PlatformLocation, 
-    private dialogService: ConfirmDialogService
-  ) {
+    private dialogService: ConfirmDialogService) {
    }
 
-  openConfirmationDialogForBack() {
-    this.dialogService
-      .confirm("Please confirm..", "Do you really want to fold ... ?")
-      .then((confirmed) => {
-        if (confirmed) {
-          
-        }
-      })
-      .catch(() => console.log("Continue"));
-  }
-
   ngOnInit() {
+
     window.addEventListener('beforeunload', function (e) {
       const confirmationMessage = '\o/';
       e.returnValue = confirmationMessage;
@@ -134,7 +122,6 @@ export class CardSectionComponent implements OnInit {
       this.commonService.gameCreator.name === this.commonService.getPlayerName()) {
       this.startFlag = true;
     }
-
    
     this.distributeIndexEmitter.subscribe((data) => {
       this.distributeIndex = data;
@@ -170,6 +157,11 @@ export class CardSectionComponent implements OnInit {
         console.log("u can have only 14 cards in hand");
       }
     }
+
+    const playerCards = [];
+    playerCards[0] = this.currentPlayerIndex;
+    playerCards[1] = this.cards;
+    this.socket.emit("updatePlayersCards", playerCards);
   }
 
   dropOpenCard(event: CdkDragDrop<string[]>) {
@@ -213,7 +205,7 @@ export class CardSectionComponent implements OnInit {
       this.isDisabled = false;
       this.deck.shift();
       this.socket.emit("updateDeck", this.deck); 
-      
+
       const playerCards = [];
       playerCards[0] = this.currentPlayerIndex;
       playerCards[1] = this.cards;

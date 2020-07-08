@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { Player } from '../models/player.model';
 import { Socket } from "ngx-socket-io";
 import { ConfirmDialogService } from '../confirm-dialog.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-players-list',
@@ -16,17 +16,26 @@ export class PlayersListComponent implements OnInit {
   usersObservable: Observable<Player[]>;
   users = [];
   usersChanged: Subject<Player[]> = null;
+  playerReadyNameArray = [];
+
+
+  playerReadyNameEmitter = this.socket
+    .fromEvent<string[]>("playerReadyNameArray")
+    .subscribe((data) => { 
+      this.playerReadyNameArray = data; 
+  });
 
   constructor(private commonService: CommonService, 
     private router: Router,
     private dialogService: ConfirmDialogService, 
-    private socket: Socket) { }
+    private socket: Socket, private route: ActivatedRoute) { }
 
   ngOnInit() {
     let roomId = this.router.url.split('/')[2];
     let obj = {"roomId": roomId};
     this.usersObservable = this.commonService.users;
     this.socket.emit("updateUsers", obj);
+
     this.usersObservable.subscribe(data => {
       this.users = data;
     });
@@ -58,8 +67,11 @@ export class PlayersListComponent implements OnInit {
 
   onRefresh(){
     let roomId = this.router.url.split('/')[2];
-    // this.usersObservable = this.commonService.users;
     this.socket.emit("refreshUsers", roomId);
     this.usersObservable = this.commonService.users;
+  }
+
+  startOver() {
+    this.router.navigate(['/guest'], { relativeTo: this.route});
   }
 }
