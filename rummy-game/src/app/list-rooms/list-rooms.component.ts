@@ -27,6 +27,8 @@ export class ListRoomsComponent implements OnInit, OnDestroy {
       return confirmationMessage;
     });
 
+    
+
     this.roomsList = this.commonService.getRooms();
     this.subscription = this.commonService.roomsChanged.subscribe(
       (rooms: Rooms[]) => {

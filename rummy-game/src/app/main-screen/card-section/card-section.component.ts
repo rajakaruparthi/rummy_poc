@@ -116,6 +116,15 @@ export class CardSectionComponent implements OnInit {
       e.returnValue = confirmationMessage;
       return confirmationMessage;
     });
+
+    // var isOnIOS = navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPhone/i);
+    // var eventName = isOnIOS ? "pagehide" : "beforeunload";
+
+    // window.addEventListener(eventName, function (event) {
+    //   window.event.cancelBubble = true; // Don't know if this works on iOS but it might!
+
+    // });
+
     this.player = this.commonService.getPlayerName();
 
     if (this.commonService.gameCreator !== undefined &&
